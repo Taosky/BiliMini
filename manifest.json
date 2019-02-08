@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name": "BiliMini",
+    "description": "bilibili dynamic show",
+    "version": "1.4",
+    "homepage_url": "https://mou.science",
+    "browser_action": 
+    {
+        "default_icon": "icons/menubar.png",
+        "default_title": "BiliMini",
+        "default_popup": "html/popup.html"
+    },
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "permissions": [
+        "contextMenus",
+        "tabs",
+        "webRequest",
+        "*://www.bilibili.com/",
+        "*://api.vc.bilibili.com/"
+    ]
+}
