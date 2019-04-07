@@ -4,7 +4,7 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 ### 安装
 **Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
 
-Chrome: https://github.com/Taosky/BiliMini/releases/download/1.5/BiliMini.crx
+**Chrome**: https://github.com/Taosky/BiliMini/releases/download/1.5/BiliMini.crx
 
 
 ### 功能
