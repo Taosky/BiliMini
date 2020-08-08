@@ -1,11 +1,12 @@
 ## BiliMini
 Bilibili辅助扩展，用于提示并快速查看更新。
+（密钥丢失，可能不再更新，但应该可以长期使用）
 
 ### 安装
 **Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
 
 **Chrome**: https://github.com/Taosky/BiliMini//releases/latest
-
+Chrome官方已无法正常安装使用第三方扩展，可使用第三方浏览器。
 
 ### 功能
 - 角标数字提醒
