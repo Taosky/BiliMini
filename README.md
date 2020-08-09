@@ -1,6 +1,5 @@
 ## BiliMini
 Bilibili辅助扩展，用于提示并快速查看更新。
-（密钥丢失，可能不再更新，但应该可以长期使用）
 
 ### 安装
 **Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
