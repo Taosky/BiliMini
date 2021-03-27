@@ -2,8 +2,8 @@
     "manifest_version": 2,
     "name": "BiliMini",
     "description": "bilibili dynamic show",
-    "version": "1.6",
-    "homepage_url": "https://mou.science",
+    "version": "1.7",
+    "homepage_url": "https://taosky.github.io",
     "browser_action": 
     {
         "default_icon": "icons/menubar.png",
@@ -13,14 +13,6 @@
     "background": {
         "scripts": ["background.js"]
     },
-    "content_scripts": [
-        {
-          "matches": ["https://t.bilibili.com/pages/nav/index"],
-          "run_at": "document_end",
-          "js": ["popup_modify.js"],
-          "all_frames": true
-        }
-      ],
     "permissions": [
         "contextMenus",
         "tabs",

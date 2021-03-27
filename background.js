@@ -31,9 +31,11 @@ function checkNew(update=false) {
                 chrome.browserAction.setBadgeText({text:'X'});
                 return
             }
+            
+            let newInfo = JSON.parse(xhr.responseText);
+
             //更新数
             let update_num = 0;
-            let newInfo = JSON.parse(xhr.responseText);
             localStorage['latest_dynamic_id']=newInfo.data.cards[0].desc.dynamic_id;
             if (!localStorage['dynamic_id'] || update===true){
                 localStorage['dynamic_id']=newInfo.data.cards[0].desc.dynamic_id;
