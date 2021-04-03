@@ -70,5 +70,6 @@ function insertHtml() {
 }
 
 window.onload = function () {
+  chrome.runtime.sendMessage({popupOpen: true});
   insertHtml();
 };
