@@ -23,46 +23,85 @@ function insertHtml() {
     .then(response => response.json())
     .then(function (json) {
       loadEle.style.opacity = 0;
-      let cardListEle = document.getElementById("videoList");
-      iHtml = ""
+      let cardListEle1 = document.getElementById("line1");
+      let cardListEle2 = document.getElementById("line2");
+      let iHtml1 = "";
+      let iHtml2 = "";
+      let cardIndex = 0
       json.data.cards.forEach(function (card) {
+        cardIndex += 1;
+        console.log(cardIndex % 2)
         let cardObj = JSON.parse(card.card);
         let retime = getRetime(cardObj.ctime)
-        if (cardObj.pic) {
-          iHtml += `<div class="card">
-        <a class="video-img" href="${cardObj.short_link}"><img class="cover" src="${cardObj.pic}" alt="tumb" style="width:100%"></a>
-        <span class="pub-time">${retime}</span>
-        <div class="container">
-          <a style="text-decoration: none; color:black" href="${cardObj.short_link}">
-            <h5 class="title"><b> ${cardObj.title}</b></h5>
-          </a>
-            <a class="up-link" title="${cardObj.owner.name}" href="https://space.bilibili.com/${cardObj.owner.mid}">
-                <img class="avatar" src="${cardObj.owner.face}">
-                <span class="up-name">${cardObj.owner.name}</span>
+        if (cardIndex % 2 === 1) {
+          if (cardObj.pic) {
+            iHtml1 += `<div class="card">
+          <a class="video-img" href="${cardObj.short_link}"><img class="cover" src="${cardObj.pic}" alt="tumb" style="width:100%"></a>
+          <span class="pub-time">${retime}</span>
+          <div class="container">
+            <a style="text-decoration: none; color:black" href="${cardObj.short_link}">
+              <h5 class="title"><b> ${cardObj.title}</b></h5>
             </a>
-        </div>
-      </div>`
-
-        } else {
-          iHtml += `<div class="card">
-        <a class="video-img" href="${cardObj.url}"><img class="cover" src="${cardObj.cover}" alt="tumb" style="width:100%"></a>
-        <span class="pub-time">番剧</span>
-        <div class="container">
-          <a style="text-decoration: none; color:black" href="${cardObj.url}">
-            <h5 class="title"><b> ${cardObj.new_desc} </b></h5>
-          </a>
-          <div class="up">
-            <a class="up-link" href="${cardObj.url}">
-                <img class="avatar" src="${cardObj.apiSeasonInfo.cover}">
-                <span class="up-name">${cardObj.apiSeasonInfo.title}</span>
-            </a>
+              <a class="up-link" title="${cardObj.owner.name}" href="https://space.bilibili.com/${cardObj.owner.mid}">
+                  <img class="avatar" src="${cardObj.owner.face}">
+                  <span class="up-name">${cardObj.owner.name}</span>
+              </a>
           </div>
-        </div>
-      </div>`
-
-        }
+        </div>`
+  
+          } else {
+            iHtml1 += `<div class="card">
+          <a class="video-img" href="${cardObj.url}"><img class="cover" src="${cardObj.cover}" alt="tumb" style="width:100%"></a>
+          <span class="pub-time">番剧</span>
+          <div class="container">
+            <a style="text-decoration: none; color:black" href="${cardObj.url}">
+              <h5 class="title"><b> ${cardObj.new_desc} </b></h5>
+            </a>
+            <div class="up">
+              <a class="up-link" href="${cardObj.url}">
+                  <img class="avatar" src="${cardObj.apiSeasonInfo.cover}">
+                  <span class="up-name">${cardObj.apiSeasonInfo.title}</span>
+              </a>
+            </div>
+          </div>
+        </div>`
+          }
+        } else {
+          if (cardObj.pic) {
+            iHtml2 += `<div class="card">
+          <a class="video-img" href="${cardObj.short_link}"><img class="cover" src="${cardObj.pic}" alt="tumb" style="width:100%"></a>
+          <span class="pub-time">${retime}</span>
+          <div class="container">
+            <a style="text-decoration: none; color:black" href="${cardObj.short_link}">
+              <h5 class="title"><b> ${cardObj.title}</b></h5>
+            </a>
+              <a class="up-link" title="${cardObj.owner.name}" href="https://space.bilibili.com/${cardObj.owner.mid}">
+                  <img class="avatar" src="${cardObj.owner.face}">
+                  <span class="up-name">${cardObj.owner.name}</span>
+              </a>
+          </div>
+        </div>`
+          } else {
+            iHtml2 += `<div class="card">
+          <a class="video-img" href="${cardObj.url}"><img class="cover" src="${cardObj.cover}" alt="tumb" style="width:100%"></a>
+          <span class="pub-time">番剧</span>
+          <div class="container">
+            <a style="text-decoration: none; color:black" href="${cardObj.url}">
+              <h5 class="title"><b> ${cardObj.new_desc} </b></h5>
+            </a>
+            <div class="up">
+              <a class="up-link" href="${cardObj.url}">
+                  <img class="avatar" src="${cardObj.apiSeasonInfo.cover}">
+                  <span class="up-name">${cardObj.apiSeasonInfo.title}</span>
+              </a>
+            </div>
+          </div>
+        </div>`
+          }
+        }  
       });
-      cardListEle.innerHTML = iHtml;
+      cardListEle1.innerHTML = iHtml1;
+      cardListEle2.innerHTML = iHtml2;
       appEle = document.getElementById('app');
       appEle.style.opacity = 1;
     })

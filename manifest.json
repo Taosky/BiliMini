@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "BiliMini",
     "description": "bilibili dynamic show",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "homepage_url": "https://taosky.github.io",
     "browser_action": 
     {

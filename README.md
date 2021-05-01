@@ -5,7 +5,7 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 **Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
 
 **Chrome**: https://github.com/Taosky/BiliMini//releases/latest
-Chrome官方已无法正常安装使用第三方扩展，可使用第三方浏览器。
+Chrome官方已无法正常安装使用第三方扩展，可使用第三方浏览器。（或者加载解压的扩展使用）
 
 ### 功能
 - 角标数字提醒
@@ -17,6 +17,9 @@ Chrome官方已无法正常安装使用第三方扩展，可使用第三方浏�
 
 
 ### 更新
+**2021-05-01: 版本1.8.1**
+- 优化卡片样式
+
 **2021-04-03: 版本1.8.1**
 - 修复角标数字不消除的Bug
 
