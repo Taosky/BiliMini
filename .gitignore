@@ -59,3 +59,21 @@ typings/
 
 # next.js build output
 .next
+
+# gimp
+*.xcf
+
+# key file
+*.pem
+
+# dist
+dist
+
+# idea
+.idea
+
+# artifacts
+artifacts
+
+# mac
+.DS_Store
