@@ -19,10 +19,6 @@ Install all needed node modules.
 
 Realtime debugging in browser(add `./dist/manifest.json` in browser addon page).
 
-### `npm version v1.8.4`
-
-Set extension version.
-
 ### `npm run build`
 
 Build webextension code (`./dist/`) and generate .zip file (`./artifacts/`).
