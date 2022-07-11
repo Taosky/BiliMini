@@ -1,7 +1,7 @@
 /* eslint-disable */ 
 function checkNew(update=false) {
   let xhr = new XMLHttpRequest();
-  xhr.open("GET", `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8`, true);
+  xhr.open("GET", `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`, true);
   xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
           // 未登录
