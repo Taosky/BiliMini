@@ -22,3 +22,5 @@ Realtime debugging in browser(add `./dist/manifest.json` in browser addon page).
 ### `npm run build`
 
 Build webextension code (`./dist/`) and generate .zip file (`./artifacts/`).
+
+Please check files in zip, these will be the same as the uploaded files.
