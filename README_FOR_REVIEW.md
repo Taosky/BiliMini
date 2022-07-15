@@ -5,7 +5,8 @@ Build with [vue-web-extension](https://github.com/Kocal/vue-web-extension)
 
 
 ## Requirements
-- Node.js >= 10 and npm >= 5
+- Node.js 14.17.2
+- NPM 6.14.13
 - vue-cli 3+
 
 
