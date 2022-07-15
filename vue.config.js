@@ -15,6 +15,12 @@ module.exports = defineConfig({
           entry: 'src/background.js'
         }
       }
-    }
-  }
+    },
+  },
+  productionSourceMap: false,
+  filenameHashing: false,
+  chainWebpack: config => {
+    config.optimization.delete("splitChunks");
+    config.optimization.splitChunks(false).minimize(false);
+  },
 })
