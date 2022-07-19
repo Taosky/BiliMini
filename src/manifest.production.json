@@ -1,0 +1,31 @@
+{
+  "manifest_version": 2,
+  "name": "BiliMini",
+  "description": "工具栏添加一个按钮，用于提示并快速查看Bilibili更新",
+  "version": "2.0.0",
+  "permissions": [
+    "webRequest",
+    "*://www.bilibili.com/",
+    "*://api.vc.bilibili.com/",
+    "*://api.live.bilibili.com/"
+  ],
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ],
+    "persistent": true
+  },
+  "browser_action": {
+    "default_popup": "popup.html",
+    "default_title": "BiliMini",
+    "default_icon": {
+      "19": "icons/19.png",
+      "38": "icons/38.png"
+    }
+  }
+}
