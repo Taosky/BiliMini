@@ -44,7 +44,6 @@ export default {
     CardEle,
   },
   mounted() {
-    browser.runtime.sendMessage({});
     this.activeTab = localStorage["activeTab"] ? localStorage["activeTab"] : "8";
     this.updateCards();
     this.listenScoller();
