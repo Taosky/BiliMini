@@ -1,57 +1,56 @@
-/* eslint-disable */ 
-function checkNew(update=false) {
-    let xhr = new XMLHttpRequest();
-    xhr.open("GET", `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`, true);
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4) {
-            // 未登录
-            if (xhr.responseText.indexOf(`"data":{}`)!==-1){
-                chrome.browserAction.setBadgeText({text:'X'});
-                return
-            }
-            
-            let newInfo = JSON.parse(xhr.responseText);
-  
-            //更新数
-            let update_num = 0;
-            localStorage['latest_dynamic_id']=newInfo.data.cards[0].desc.dynamic_id;
-            if (!localStorage['dynamic_id'] || update===true){
-                localStorage['dynamic_id']=newInfo.data.cards[0].desc.dynamic_id;
-            }
-            else {
-                newInfo.data.cards.forEach(function (card) {
-                    if (card.desc.dynamic_id >localStorage['dynamic_id']){
-                        update_num+=1
-                    }
-                })
-            }
-            //角标
-            if (update_num >= 10) {
-                chrome.browserAction.setBadgeText({text: "10+"});
-            } else if (update_num < 10 && update_num > 0)
-                chrome.browserAction.setBadgeText({text: String(update_num)});
-            else{
-                chrome.browserAction.setBadgeText({text:''});
-            }
+/* eslint-disable */
+function checkNew(update = false) {
+    fetch(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`)
+    .then(response => response.json())
+    .then(data => {
+        // 未登录
+        if (data['code']=== -6) {
+            chrome.action.setBadgeText({ text: 'X' });
+            return
         }
-    };
-    xhr.send();
-  }
-  
-  
-  function start() {
-    //监听popup打开
-    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
-        if(message.popupOpen) {
-            checkNew(true);
+        let newInfo = data;
+
+        //更新数
+        let update_num = 0;
+        chrome.storage.sync.set({"latest_dynamic_id": newInfo.data.cards[0].desc.dynamic_id}, function() {
+            console.log('Value is set' );
+          });
+        let current_dynamic_id = undefined;
+        chrome.storage.sync.get(['latest_dynamic_id'], function(result) {
+            console.log('Value currently is ' + result.latest_dynamic_id);
+            current_dynamic_id = result.latest_dynamic_id;
+          });
+        if (!current_dynamic_id || update === true) {
+            chrome.storage.sync.set({"latest_dynamic_id": newInfo.data.cards[0].desc.dynamic_id}, function() {
+                console.log('Value is set');
+              });
+        }
+        else {
+            newInfo.data.cards.forEach(function (card) {
+                if (card.desc.dynamic_id > current_dynamic_id) {
+                    update_num += 1
+                }
+            })
+        }
+        //角标
+        if (update_num >= 10) {
+            chrome.action.setBadgeText({ text: "10+" });
+        } else if (update_num < 10 && update_num > 0)
+            chrome.action.setBadgeText({ text: String(update_num) });
+        else {
+            chrome.action.setBadgeText({ text: '' });
         }
     });
-    //定时检查订阅
-    setInterval(checkNew, 60000);
-  }
-  
-  
-  //开始运行
-  start();
-  
-  
+}
+
+//监听popup打开
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.popupOpen) {
+        checkNew(true);
+    }
+});
+
+chrome.alarms.create({ periodInMinutes: 1.0 });
+chrome.alarms.onAlarm.addListener(() => {
+    checkNew();
+});
