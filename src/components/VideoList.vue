@@ -43,8 +43,20 @@ export default {
   components: {
     CardEle,
   },
-  mounted() {
-    this.activeTab = localStorage["activeTab"] ? localStorage["activeTab"] : "8";
+  async mounted() {
+    this.activeTab = localStorage["activeTab"]
+      ? localStorage["activeTab"]
+      : "8";
+    let login_status = await this.is_logged_in();
+    console.log(login_status);
+    if (!login_status) {
+      this.$message.error({
+        message: "尚未登录，登录后再试",
+        duration: 0,
+        offset: 1,
+      });
+      return;
+    }
     this.updateCards();
     this.listenScoller();
   },
@@ -99,6 +111,15 @@ export default {
     },
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
+    },
+    is_logged_in: async function () {
+      let response = await axios.get(
+        `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`
+      );
+      if (response.data.code != 0) {
+        return false;
+      }
+      return true;
     },
     get_bvid: function (short_link) {
       return short_link.match(/\/(BV\w+)$/)[1];
