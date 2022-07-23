@@ -43,8 +43,14 @@ export default {
   components: {
     CardEle,
   },
-  mounted() {
+  async mounted() {
     this.activeTab = localStorage["activeTab"] ? localStorage["activeTab"] : "8";
+    let login_status = await this.is_logged_in();
+    console.log(login_status)
+    if(!login_status){
+      this.$message.error({message:'尚未登录，登录后再试',duration:0,offset:1});
+      return;
+    }
     this.updateCards();
     this.listenScoller();
   },
@@ -100,10 +106,17 @@ export default {
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    get_bvid: function (short_link) {
+    is_logged_in: async function() {
+    let response = await axios.get(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`);
+    if (response.data.code !=0){
+      return false;
+    }
+    return true;
+    },
+    get_bvid(short_link) {
       return short_link.match(/\/(BV\w+)$/)[1];
     },
-    getRetime: function (createtime) {
+    getRetime(createtime) {
       let now = Date.parse(new Date()) / 1000;
       let limit = now - createtime;
       let content = "";
@@ -122,7 +135,7 @@ export default {
       }
       return content;
     },
-    genLiveData: function (response) {
+    genLiveData(response) {
       let cardIndex = 0;
       let that = this;
       response.data.data.list.forEach(function (card) {
@@ -137,7 +150,7 @@ export default {
         }
       });
     },
-    genVideoData: function (response) {
+    genVideoData(response) {
       let cardIndex = 0;
       let that = this;
       if (response.data.data.cards.length < 20) {
@@ -164,7 +177,7 @@ export default {
         }
       });
     },
-    resetData: function () {
+    resetData() {
       // 回到顶部
       scrollTo(0, 0);
       // 清空数据
@@ -172,7 +185,7 @@ export default {
       this.videolist1 = [];
       this.videolist2 = [];
     },
-    updateCards: async function (refresh = true, offset = "") {
+    async updateCards(refresh = true, offset = "") {
       // loading
       this.loading = true;
       // 直播/视频
@@ -220,7 +233,7 @@ export default {
 }
 #col1,
 #col2 {
-  width: 48%;
+  width: 50%;
   display: inline-flex;
   flex-wrap: wrap;
 }

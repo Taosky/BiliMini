@@ -133,7 +133,7 @@ export default {
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
-  width: 170px;
+  width: 177px;
   margin-left: 5px;
   margin-right: 5px;
   border-radius: 5px;

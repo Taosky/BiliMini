@@ -23,9 +23,9 @@ html {
     height:650px
   }
 
-  html::-webkit-scrollbar {
+  /* html::-webkit-scrollbar {
     width: 0px;
-  }
+  } */
 
   body {
     overflow-x: hidden;
