@@ -56,4 +56,8 @@ export default {
     opacity: 0;
     transition:opacity 0.5s ease-in;
   }
+
+  .header .el-tabs__item {
+    font-size:16px;
+  }
 </style>

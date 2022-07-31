@@ -8,9 +8,21 @@
         v-loading.fullscreen.lock="loading"
         :element-loading-background="el_loading_bg"
       >
-        <el-tab-pane label="投稿" name="8"></el-tab-pane>
-        <el-tab-pane label="番剧" name="512"></el-tab-pane>
-        <el-tab-pane label="直播" name="65536"></el-tab-pane>
+        <el-tab-pane name="8">
+          <span slot="label">投稿
+            <el-badge v-show="badgeShow.normal" is-dot class="label-badge"/>
+          </span>
+        </el-tab-pane>
+        <el-tab-pane name="512">
+          <span slot="label">番剧
+            <el-badge v-show="badgeShow.bangumi" is-dot class="label-badge"/>
+          </span>
+        </el-tab-pane>
+        <el-tab-pane name="65536">
+          <span slot="label">直播
+            <el-badge v-show="badgeShow.live" :value="liveNum" class="label-badge"/>
+          </span>
+        </el-tab-pane>
       </el-tabs>
       <div class="main">
         <div id="col1">
@@ -45,11 +57,12 @@ export default {
     CardEle,
   },
   async mounted() {
+    // 当前tab
     this.activeTab = localStorage["activeTab"]
       ? localStorage["activeTab"]
       : "8";
+    // 登录状态
     let login_status = await this.is_logged_in();
-    console.log(login_status);
     if (!login_status) {
       this.$message.error({
         message: "尚未登录，登录后再试",
@@ -58,6 +71,14 @@ export default {
       });
       return;
     }
+    // 获取更新数量
+    this.checkLive();
+    let that = this;
+    chrome.runtime.sendMessage({getNums: true}, nums => {
+      that.badgeShow.normal = nums.normal>0 ? true : false;
+      that.badgeShow.bangumi = nums.bangumi>0 ? true : false;
+   });
+    // 更新数据
     this.updateCards();
     this.listenScoller();
   },
@@ -68,6 +89,12 @@ export default {
       activeTab: "8",
       loading: false,
       noMore: false,
+      badgeShow: {
+        normal: false,
+        bangumi: false,
+        live: false,
+      },
+      liveNum:0,
     };
   },
   computed: {
@@ -82,10 +109,8 @@ export default {
         : "";
     },
     el_loading_bg() {
-      return window.matchMedia("(prefers-color-scheme: dark)").matches
-        ? "rgba(0, 0, 0, 0.3)"
-        : "hsla(0,0%,100%,.9)";
-    },
+      return window.matchMedia('(prefers-color-scheme: dark)').matches?"rgba(0, 0, 0, 0.3)":"hsla(0,0%,100%,.9)"
+    }
   },
   methods: {
     // 监听滚动条
@@ -191,6 +216,19 @@ export default {
         }
       });
     },
+    checkLive: async function(){
+      let response = await axios.get(
+          `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=10`
+        );
+      if (response.data.data.list.length>0){
+        this.badgeShow.live = true;
+        this.liveNum = response.data.data.list.length;
+      }
+    },
+    resetBadge: function() {
+      this.badgeShow.normal = false;
+      this.badgeShow.bangumi = false;
+    },
     resetData: function () {
       // 回到顶部
       scrollTo(0, 0);
@@ -231,13 +269,12 @@ export default {
 </script>
 
 <style scoped>
-@media (prefers-color-scheme: dark) {
+@media (prefers-color-scheme: dark) {  
   #videoList {
-    background: #181818 !important;
-    scrollbar-width: none;
+    background: #181818!important;
   }
-  .header {
-    background: #181818 !important;
+  .header{
+    background: #181818!important;
   }
 }
 

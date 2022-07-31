@@ -1,4 +1,7 @@
 /* eslint-disable */ 
+let bangumi_num = 0;
+let normal_num = 0
+
 function checkNew(update=false) {
     let xhr = new XMLHttpRequest();
     xhr.open("GET", `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`, true);
@@ -22,7 +25,14 @@ function checkNew(update=false) {
                 newInfo.data.cards.forEach(function (card) {
                     if (card.desc.dynamic_id >localStorage['dynamic_id']){
                         update_num+=1
+                        // 不同类型更新数
+                        if (card.desc.type===8){
+                            normal_num+=1
+                        }else if (card.desc.type===512){
+                            bangumi_num+=1
+                        }
                     }
+                    
                 })
             }
             //角标
@@ -37,11 +47,25 @@ function checkNew(update=false) {
     };
     xhr.send();
   }
-  
+
+  function getNums(){
+    return new Promise(resolve => {
+        let nums = {bangumi:bangumi_num, normal:normal_num};
+        normal_num = 0;
+        bangumi_num = 0;
+        resolve(nums);
+      });
+
+  }
   
   function start() {
     //监听popup打开
     chrome.runtime.onMessage.addListener(function(message, sender, sendResponse){
+        // 返回更新数量
+        if (message.getNums) {
+            getNums().then(sendResponse);
+            return true;
+          }
         if(message.popupOpen) {
             checkNew(true);
         }
