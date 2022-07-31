@@ -130,6 +130,16 @@ export default {
 };
 </script>
 <style scoped>
+@media (prefers-color-scheme: dark) {
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(255, 253, 253, 0.614);
+    background: #282828;
+  }
+  .card a{
+    color: rgb(219, 215, 215)!important;
+  }
+}
+
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
