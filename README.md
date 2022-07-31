@@ -5,6 +5,7 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 **Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
 
 **Chrome**: https://github.com/Taosky/BiliMini//releases/latest
+
 *Chrome官方已无法正常安装使用第三方扩展，可使用开发版或第三方浏览器。*
 
 ### 功能
@@ -12,11 +13,17 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 - 展开更新列表
 
 ### 截图
-![按钮和角标](preview/0.png)
-![页面](preview/1.png)
+![按钮和角标](preview/1.png)
+![页面](preview/2.png)
+![页面](preview/3.png)
 
 
 ### 更新
+**2022-07-31: 版本2.1.0**
+- 自适应浏览器暗黑模式
+- 增加tab的badge显示，方便查看更新
+- 修复Chromium下的异步存储问题
+
 **2022-07-19: 版本2.0.0**
 - 因Mozilla Addon审核问题更换vue-cli 模板[vue-cli-plugin-chrome-extension-cli](https://github.com/sanyu1225/vue-cli-plugin-chrome-extension-cli)
 - Popup页面新增Tab，分别显示投稿、番剧、直播信息
