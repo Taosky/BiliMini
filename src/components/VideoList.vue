@@ -6,6 +6,7 @@
         v-model="activeTab"
         @tab-click="handleClick"
         v-loading.fullscreen.lock="loading"
+        :element-loading-background="el_loading_bg"
       >
         <el-tab-pane label="投稿" name="8"></el-tab-pane>
         <el-tab-pane label="番剧" name="512"></el-tab-pane>
@@ -79,6 +80,11 @@ export default {
       return this.videolist2[this.videolist2.length - 1].dynamicId
         ? this.videolist2[this.videolist2.length - 1].dynamicId
         : "";
+    },
+    el_loading_bg() {
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "rgba(0, 0, 0, 0.3)"
+        : "hsla(0,0%,100%,.9)";
     },
   },
   methods: {
@@ -225,6 +231,16 @@ export default {
 </script>
 
 <style scoped>
+@media (prefers-color-scheme: dark) {
+  #videoList {
+    background: #181818 !important;
+    scrollbar-width: none;
+  }
+  .header {
+    background: #181818 !important;
+  }
+}
+
 #videoList {
   width: 380px;
 }

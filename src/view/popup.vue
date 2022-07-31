@@ -17,9 +17,21 @@ export default {
 </script>
 
 <style>
-html {
-    -ms-overflow-style: none;
-    overflow: -moz-scrollbars-none;
+@media (prefers-color-scheme: dark) {  
+  .el-tabs__nav-wrap::after {
+    background-color:#181818!important;
+  }
+  .el-tabs__item{
+    color: white !important;
+  }
+  .el-tabs__item:hover{
+    color:#409eff!important;
+  }
+  html {
+    scrollbar-color: gray #282828;
+  }
+}
+  html {
     height:650px
   }
 
