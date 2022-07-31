@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BiliMini",
   "description": "工具栏添加一个按钮，用于提示并快速查看Bilibili更新",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "permissions": [
     "webRequest",
     "alarms",
