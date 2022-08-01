@@ -1,4 +1,6 @@
 ## BiliMini
+![logo](preview/logo.png)
+
 Bilibili辅助扩展，用于提示并快速查看更新。
 
 ### 安装
@@ -6,16 +8,17 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 
 **Chrome**: https://github.com/Taosky/BiliMini//releases/latest
 
-*Chrome官方已无法正常安装使用第三方扩展，可使用开发版或第三方浏览器。*
+*Chrome官方已无法正常安装使用第三方扩展，可使用开发版或第三方浏览器。近期上架Chrome商店和Edge商店*
 
 ### 功能
 - 角标数字提醒
 - 展开更新列表
 
-### 截图
-![按钮和角标](preview/1.png)
-![页面](preview/2.png)
-![页面](preview/3.png)
+### 预览
+![small](preview/small.png)
+![medium-1](preview/medium-1.png)
+![medium-2](preview/medium-2.png)
+![medium-3](preview/medium-3.png)
 
 
 ### 更新
@@ -55,6 +58,5 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 - 修复弹出窗口空白的问题，页面更新（参考脚本Bilibili Evolved）
 
 **2019.12.21：版本1.6**
-
 - CSS优化样式，隐藏滚动条等
 
