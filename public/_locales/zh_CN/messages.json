@@ -1,0 +1,10 @@
+{
+    "extName": {
+        "message": "BiliMini",
+        "description": "Extention Name"
+    },
+    "desc": {
+        "message": "工具栏添加一个按钮，用于提示并快速查看Bilibili更新等信息",
+        "description": "Extention description"
+    }
+}
