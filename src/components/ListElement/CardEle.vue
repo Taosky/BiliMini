@@ -71,7 +71,7 @@
     type:4100 疑似推荐UP
     type:4101 疑似推荐UP -->
     <!-- type:65535 直播（自定义） -->
-   <div
+    <div
       class="card"
       v-else-if="cardObj._type === 65535"
       @mouseenter="handleMouseEnter"
@@ -135,8 +135,8 @@ export default {
     box-shadow: 0 4px 8px 0 rgba(255, 253, 253, 0.614);
     background: #282828;
   }
-  .card a{
-    color: rgb(219, 215, 215)!important;
+  .card a {
+    color: rgb(219, 215, 215) !important;
   }
 }
 

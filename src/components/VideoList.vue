@@ -9,18 +9,25 @@
         :element-loading-background="el_loading_bg"
       >
         <el-tab-pane name="8">
-          <span slot="label">投稿
-            <el-badge v-show="badgeShow.normal" is-dot class="label-badge"/>
+          <span slot="label"
+            >投稿
+            <el-badge v-show="badgeShow.normal" is-dot class="label-badge" />
           </span>
         </el-tab-pane>
         <el-tab-pane name="512">
-          <span slot="label">番剧
-            <el-badge v-show="badgeShow.bangumi" is-dot class="label-badge"/>
+          <span slot="label"
+            >番剧
+            <el-badge v-show="badgeShow.bangumi" is-dot class="label-badge" />
           </span>
         </el-tab-pane>
         <el-tab-pane name="65536">
-          <span slot="label">直播
-            <el-badge v-show="badgeShow.live" :value="liveNum" class="label-badge"/>
+          <span slot="label"
+            >直播
+            <el-badge
+              v-show="badgeShow.live"
+              :value="liveNum"
+              class="label-badge"
+            />
           </span>
         </el-tab-pane>
       </el-tabs>
@@ -58,21 +65,27 @@ export default {
   },
   async mounted() {
     // 当前tab
-    this.activeTab = localStorage["activeTab"] ? localStorage["activeTab"] : "8";
+    this.activeTab = localStorage["activeTab"]
+      ? localStorage["activeTab"]
+      : "8";
     // 登录状态
     let login_status = await this.is_logged_in();
-    console.log(login_status)
-    if(!login_status){
-      this.$message.error({message:'尚未登录，登录后再试',duration:0,offset:1});
+    console.log(login_status);
+    if (!login_status) {
+      this.$message.error({
+        message: "尚未登录，登录后再试",
+        duration: 0,
+        offset: 1,
+      });
       return;
     }
     // 获取更新数量
     this.checkLive();
     let that = this;
-    chrome.runtime.sendMessage({getNums: true}, nums => {
-      that.badgeShow.normal = nums.normal>0 ? true : false;
-      that.badgeShow.bangumi = nums.bangumi>0 ? true : false;
-   });
+    chrome.runtime.sendMessage({ getNums: true }, (nums) => {
+      that.badgeShow.normal = nums.normal > 0 ? true : false;
+      that.badgeShow.bangumi = nums.bangumi > 0 ? true : false;
+    });
     // 更新数据
     this.updateCards();
     this.listenScoller();
@@ -89,7 +102,7 @@ export default {
         bangumi: false,
         live: false,
       },
-      liveNum:0,
+      liveNum: 0,
     };
   },
   computed: {
@@ -104,7 +117,9 @@ export default {
         : "";
     },
     el_loading_bg() {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches?"rgba(0, 0, 0, 0.3)":"hsla(0,0%,100%,.9)"
+      return window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "rgba(0, 0, 0, 0.3)"
+        : "hsla(0,0%,100%,.9)";
     },
   },
   methods: {
@@ -138,12 +153,14 @@ export default {
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));
     },
-    is_logged_in: async function() {
-    let response = await axios.get(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`);
-    if (response.data.code !=0){
-      return false;
-    }
-    return true;
+    is_logged_in: async function () {
+      let response = await axios.get(
+        `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`
+      );
+      if (response.data.code != 0) {
+        return false;
+      }
+      return true;
     },
     get_bvid(short_link) {
       return short_link.match(/\/(BV\w+)$/)[1];
@@ -209,16 +226,16 @@ export default {
         }
       });
     },
-    checkLive: async function(){
+    checkLive: async function () {
       let response = await axios.get(
-          `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=10`
-        );
-      if (response.data.data.list.length>0){
+        `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=10`
+      );
+      if (response.data.data.list.length > 0) {
         this.badgeShow.live = true;
         this.liveNum = response.data.data.list.length;
       }
     },
-    resetBadge: function() {
+    resetBadge: function () {
       this.badgeShow.normal = false;
       this.badgeShow.bangumi = false;
     },
