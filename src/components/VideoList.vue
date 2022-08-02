@@ -305,12 +305,8 @@ export default {
   height: 32px;
   width: 350px;
   margin-left: 7px;
-  background-color: #f4f4f4;
   cursor: pointer;
   border: none;
   border-radius: 4px;
-}
-.moreBtn:hover {
-  background-color: #ececec;
 }
 </style>

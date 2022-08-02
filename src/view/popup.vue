@@ -32,7 +32,8 @@ export default {
   }
 }
   html {
-    height:650px
+    height:650px;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   }
 
   html::-webkit-scrollbar {
