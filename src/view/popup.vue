@@ -5,60 +5,60 @@
 </template>
 
 <script>
-import VideoList from '@/components/VideoList.vue'
+import VideoList from "@/components/VideoList.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: { VideoList },
-  mounted: function(){
-    chrome.runtime.sendMessage({popupOpen: true});
-  }
-}
+  mounted: function () {
+    chrome.runtime.sendMessage({ popupOpen: true });
+  },
+};
 </script>
 
 <style>
-@media (prefers-color-scheme: dark) {  
+@media (prefers-color-scheme: dark) {
   .el-tabs__nav-wrap::after {
-    background-color:#181818!important;
+    background-color: #181818 !important;
   }
-  .el-tabs__item{
+  .el-tabs__item {
     color: white !important;
   }
-  .el-tabs__item:hover{
-    color:#409eff!important;
+  .el-tabs__item:hover {
+    color: #409eff !important;
   }
   html {
     scrollbar-color: gray #282828;
   }
 }
-  html {
-    height:650px;
-    font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
-  }
+html {
+  height: 650px;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei",
+    "WenQuanYi Micro Hei";
+}
 
-  html::-webkit-scrollbar {
-    width: 0px;
-  }
+html::-webkit-scrollbar {
+  width: 0px;
+}
 
-  body {
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 
+#loading {
+  transition: opacity 0.5s ease-out;
+  width: 380px;
+  opacity: 1;
+  text-align: center;
+  position: absolute;
+}
+#app {
+  opacity: 0;
+  transition: opacity 0.5s ease-in;
+}
 
-  #loading{
-    transition: opacity 0.5s ease-out;
-    width: 380px;
-    opacity: 1;
-    text-align: center;
-    position: absolute;
-  }
-  #app {
-    opacity: 0;
-    transition:opacity 0.5s ease-in;
-  }
-
-  .header .el-tabs__item {
-    font-size:16px;
-  }
+.header .el-tabs__item {
+  font-size: 16px;
+}
 </style>
