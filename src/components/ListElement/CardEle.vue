@@ -82,7 +82,7 @@
       /></a>
       <span class="pub-time">{{ cardObj.watched_show.text_large }}</span>
       <div class="container">
-        <a style="text-decoration: none; color: black" :href="cardObj.url">
+        <a style="text-decoration: none; color: black" :href="cardObj.link">
           <h5 class="title">
             <b> {{ cardObj.title }} </b>
           </h5>
@@ -90,7 +90,7 @@
         <div class="up">
           <a
             class="up-link"
-            :href="cardObj.url"
+            :href="`https://space.bilibili.com/${cardObj.uid}`"
             @mouseenter="handleMouseEnter"
             @mouseleave="handleMouseLeave"
           >
