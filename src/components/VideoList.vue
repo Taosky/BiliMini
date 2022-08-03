@@ -46,8 +46,8 @@
       <p style="text-align: center; font-size: 14px" v-show="noMore">
         (´・ω・｀) 没有更多了
       </p>
-      <a v-show="noMore" :href="more['link']"
-        ><button class="moreBtn" onclick="seeMore">
+      <a v-show="noMore" :href="more['link']" @click="handleLink(more['link'])"
+        ><button class="moreBtn">
           {{ more["text"] }}
         </button></a
       >
@@ -149,6 +149,10 @@ export default {
     handleClick() {
       localStorage["activeTab"] = this.activeTab;
       this.updateCards();
+    },
+    // link for chromium
+    handleLink(link){
+      chrome.tabs.create({url:link});
     },
     sleep(ms) {
       return new Promise((resolve) => setTimeout(resolve, ms));

@@ -7,7 +7,7 @@
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
-      <a class="video-img" :href="cardObj.short_link"
+      <a class="video-img" :href="cardObj.short_link" @click="handleLink(cardObj.short_link)"
         ><img class="cover" :src="cardObj.pic" alt="tumb" style="width: 100%"
       /></a>
       <span class="pub-time">{{ cardObj.retime }}</span>
@@ -15,6 +15,7 @@
         <a
           style="text-decoration: none; color: black"
           :href="cardObj.short_link"
+          @click="handleLink(cardObj.short_link)"
         >
           <h5 class="title">
             <b> {{ cardObj.title }}</b>
@@ -27,6 +28,7 @@
             class="up-link"
             :title="cardObj.owner.name"
             :href="`https://space.bilibili.com/${cardObj.owner.mid}`"
+            @click="handleLink(`https://space.bilibili.com/${cardObj.owner.mid}`)"
           >
             <img class="avatar" :src="cardObj.owner.face" />
             <span class="up-name">{{ cardObj.owner.name }}</span>
@@ -41,13 +43,13 @@
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
-      <a class="video-img" :href="cardObj.url"
+      <a class="video-img" :href="cardObj.url" @click="handleLink(cardObj.url)"
         ><img class="cover" :src="cardObj.cover" alt="tumb" style="width: 100%"
       /></a>
       <!-- <span class="type-name-a">{{ cardObj.apiSeasonInfo.type_name }}</span> -->
       <span class="pub-time">{{ cardObj.retime }}</span>
       <div class="container">
-        <a style="text-decoration: none; color: black" :href="cardObj.url">
+        <a style="text-decoration: none; color: black" :href="cardObj.url" @click="handleLink(cardObj.url)">
           <h5 class="title">
             <b> {{ cardObj.new_desc }} </b>
           </h5>
@@ -56,6 +58,7 @@
           <a
             class="up-link"
             :href="cardObj.url"
+            @click="handleLink(cardObj.url)"
             @mouseenter="handleMouseEnter"
             @mouseleave="handleMouseLeave"
           >
@@ -77,12 +80,12 @@
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
-      <a class="video-img" :href="cardObj.link"
+      <a class="video-img" :href="cardObj.link" @click="handleLink(cardObj.link)"
         ><img class="cover" :src="cardObj.pic" alt="tumb" style="width: 100%"
       /></a>
       <span class="pub-time">{{ cardObj.watched_show.text_large }}</span>
       <div class="container">
-        <a style="text-decoration: none; color: black" :href="cardObj.url">
+        <a style="text-decoration: none; color: black" :href="cardObj.link" @click="handleLink(cardObj.link)">
           <h5 class="title">
             <b> {{ cardObj.title }} </b>
           </h5>
@@ -90,7 +93,8 @@
         <div class="up">
           <a
             class="up-link"
-            :href="cardObj.url"
+            :href="`https://space.bilibili.com/${cardObj.uid}`"
+            @click="handleLink(`https://space.bilibili.com/${cardObj.uid}`)"
             @mouseenter="handleMouseEnter"
             @mouseleave="handleMouseLeave"
           >
@@ -125,6 +129,10 @@ export default {
         a.target.parentElement.parentElement.parentElement.children[2].children[0].style.color =
           "cadetblue";
       }
+    },
+    // link for chromium
+    handleLink(link){
+      chrome.tabs.create({url:link});
     },
   },
 };
