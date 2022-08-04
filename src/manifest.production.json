@@ -5,7 +5,6 @@
   "version": "2.1.0",
   "default_locale":"zh_CN",
   "permissions": [
-    "webRequest",
     "alarms",
     "storage",
     "activeTab"
