@@ -6,9 +6,10 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 ### 安装
 **Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
 
-**Chrome**: https://github.com/Taosky/BiliMini//releases/latest
+**Chrome**: https://chrome.google.com/webstore/detail/bilimini/fcibfbohheekhmgachjjghbhligddmcl?hl=zh-CN&authuser=0
 
-*Chrome官方已无法正常安装使用第三方扩展，可使用开发版或第三方浏览器。近期上架Chrome商店和Edge商店*
+**Edge**: https://microsoftedge.microsoft.com/addons/detail/bilimini/bpfhljkccknkkngaoklgcabllbpdfaie
+
 
 ### 功能
 - 角标数字提醒
@@ -22,6 +23,11 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 
 
 ### 更新
+**2022-08-12: 版本2.1.1**
+- 优化样式
+- 修复直播卡片链接
+- 修复Chromium下的一些问题
+
 **2022-07-31: 版本2.1.0**
 - 自适应浏览器暗黑模式
 - 增加tab的badge显示，方便查看更新
