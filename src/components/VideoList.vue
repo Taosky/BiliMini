@@ -25,7 +25,7 @@
             >直播
             <el-badge
               v-show="badgeShow.live"
-              :value="liveNum"
+              :value="liveNumStr"
               class="label-badge"
             />
           </span>
@@ -102,7 +102,8 @@ export default {
         bangumi: false,
         live: false,
       },
-      liveNum: 0,
+      liveNumStr: 0,
+      livePage: 1,
     };
   },
   computed: {
@@ -140,8 +141,12 @@ export default {
     },
     // 无限加载
     infLoad: function () {
-      if (this.loading || this.noMore || this.activeTab === "65536") {
+      if (this.loading || this.noMore) {
         return;
+      }
+      if (this.activeTab === "65536"){
+        console.log('直播页面滚动加载');
+        this.livePage += 1;
       }
       this.updateCards(false, this.lastDynamicId);
     },
@@ -191,10 +196,13 @@ export default {
     genLiveData(response) {
       let cardIndex = 0;
       let that = this;
+      if (response.data.data.list.length < 10) {
+        that.noMore = true;
+      }
       response.data.data.list.forEach(function (card) {
         cardIndex += 1;
         let cardObj = card;
-        cardObj.index = cardIndex;
+        cardObj.index = cardObj.link;
         cardObj._type = 65535;
         if (cardIndex % 2 === 1) {
           that.videolist1.push(cardObj);
@@ -212,7 +220,7 @@ export default {
       response.data.data.cards.forEach(function (card) {
         cardIndex += 1;
         let cardObj = JSON.parse(card.card);
-        cardObj.index = cardIndex;
+        cardObj.index = cardObj.aid;
         cardObj._type = card.desc.type;
         cardObj.dynamicId = card.desc.dynamic_id_str;
         // 获取视频时间点截图
@@ -232,11 +240,15 @@ export default {
     },
     checkLive: async function () {
       let response = await axios.get(
-        `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=10`
+        `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=11`
       );
       if (response.data.data.list.length > 0) {
         this.badgeShow.live = true;
-        this.liveNum = response.data.data.list.length;
+        if (response.data.data.list.length > 10) {
+          this.liveNumStr = '10+';
+        } else {
+          this.liveNumStr = String(response.data.data.list.length);
+        }
       }
     },
     resetBadge: function () {
@@ -250,22 +262,21 @@ export default {
       this.noMore = false;
       this.videolist1 = [];
       this.videolist2 = [];
+      this.livePage = 1;
     },
     async updateCards(refresh = true, offset = "") {
+      if (refresh) {
+          this.resetData();
+      }
       // loading
       this.loading = true;
       // 直播/视频
       if (this.activeTab === "65536") {
-        this.resetData();
         let response = await axios.get(
-          `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=10`
+          `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=${this.livePage}&pagesize=10`
         );
         this.genLiveData(response);
-        this.noMore = true;
       } else {
-        if (refresh) {
-          this.resetData();
-        }
         let apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=${this.activeTab}`;
         if (!refresh && offset != "") {
           apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_history?type_list=${this.activeTab}&offset_dynamic_id=${offset}`;
