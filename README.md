@@ -4,16 +4,22 @@
 Bilibili辅助扩展，用于提示并快速查看更新。
 
 ### 安装
-**Firefox**: https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/
+**从浏览器扩展商店下载**
 
-**Chrome**: https://chrome.google.com/webstore/detail/bilimini/fcibfbohheekhmgachjjghbhligddmcl?hl=zh-CN&authuser=0
+[![Firefox](https://img.shields.io/amo/v/bilimini.svg?label=Mozilla%20Firefox)](https://addons.mozilla.org/zh-CN/firefox/addon/bilimini/)
 
-**Edge**: https://microsoftedge.microsoft.com/addons/detail/bilimini/bpfhljkccknkkngaoklgcabllbpdfaie
+[![Chrome](https://img.shields.io/chrome-web-store/v/fcibfbohheekhmgachjjghbhligddmcl)](https://chrome.google.com/webstore/detail/bilimini/fcibfbohheekhmgachjjghbhligddmcl?hl=zh-CN&authuser=0)
+
+[![Edge](https://img.shields.io/badge/dynamic/json?label=Edge%20Addons&prefix=v&query=%24.version&url=https%3A%2F%2Fmicrosoftedge.microsoft.com%2FAddons%2Fgetproductdetailsbycrxid%2Fbpfhljkccknkkngaoklgcabllbpdfaie)](https://microsoftedge.microsoft.com/addons/detail/bilimini/bpfhljkccknkkngaoklgcabllbpdfaie)
 
 
 ### 功能
 - 角标数字提醒
-- 展开更新列表
+- Popup展开查看
+- 支持普通投稿、番剧、直播
+- 支持Tab切换、滚动加载
+- Tab更新提示
+
 
 ### 预览
 ![small](preview/small.png)
