@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "BiliMini",
   "description": "工具栏添加一个按钮，用于提示并快速查看Bilibili更新",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "permissions": [
     "webRequest",
     "*://www.bilibili.com/",
@@ -26,6 +26,14 @@
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"
+    }
+  },
+  "commands": {
+    "_execute_browser_action": {
+      "suggested_key": {
+        "default": "Alt+B"
+      },
+      "description": "Open popup"
     }
   }
 }
