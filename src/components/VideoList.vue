@@ -58,12 +58,33 @@
 <script>
 import axios from "axios";
 import CardEle from "@/components/ListElement/CardEle.vue";
+import key from 'keymaster'
 export default {
   name: "VideoList",
   components: {
     CardEle,
   },
   async mounted() {
+    // 监听按键以切换tab
+    let that = this;
+    key('1', function(){
+      that.activeTab = '8';
+      that.updateCards();
+      localStorage["activeTab"] = that.activeTab;
+      return false;
+    });
+    key('2', function(){
+      that.activeTab = '512';
+      that.updateCards();
+      localStorage["activeTab"] = that.activeTab;
+      return false;
+    });
+    key('3', function(){
+      that.activeTab = '65536';
+      localStorage["activeTab"] = that.activeTab;
+      that.updateCards();
+      return false;
+    });
     // 当前tab
     this.activeTab = localStorage["activeTab"]
       ? localStorage["activeTab"]
@@ -80,7 +101,6 @@ export default {
     }
     // 获取更新数量
     this.checkLive();
-    let that = this;
     chrome.runtime.sendMessage({ getNums: true }, (nums) => {
       that.badgeShow.normal = nums.normal > 0 ? true : false;
       that.badgeShow.bangumi = nums.bangumi > 0 ? true : false;
