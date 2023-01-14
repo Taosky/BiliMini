@@ -64,6 +64,26 @@ export default {
     CardEle,
   },
   async mounted() {
+    // 监听按键以切换tab
+    let that = this;
+    key('1', function(){
+      that.activeTab = '8';
+      that.updateCards();
+      localStorage["activeTab"] = that.activeTab;
+      return false;
+    });
+    key('2', function(){
+      that.activeTab = '512';
+      that.updateCards();
+      localStorage["activeTab"] = that.activeTab;
+      return false;
+    });
+    key('3', function(){
+      that.activeTab = '65536';
+      localStorage["activeTab"] = that.activeTab;
+      that.updateCards();
+      return false;
+    });
     // 当前tab
     this.activeTab = localStorage["activeTab"]
       ? localStorage["activeTab"]
@@ -81,7 +101,6 @@ export default {
     }
     // 获取更新数量
     this.checkLive();
-    let that = this;
     chrome.runtime.sendMessage({ getNums: true }, (nums) => {
       that.badgeShow.normal = nums.normal > 0 ? true : false;
       that.badgeShow.bangumi = nums.bangumi > 0 ? true : false;
@@ -266,19 +285,22 @@ export default {
     },
     async updateCards(refresh = true, offset = "") {
       if (refresh) {
+        // 切换tab时重置
           this.resetData();
       }
-      // loading
       this.loading = true;
-      // 直播/视频
+      
       if (this.activeTab === "65536") {
+        // 直播
         let response = await axios.get(
           `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=${this.livePage}&pagesize=10`
         );
         this.genLiveData(response);
       } else {
+        // 视频
         let apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=${this.activeTab}`;
         if (!refresh && offset != "") {
+          // 根据偏移量（视频动态id）加载更多
           apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_history?type_list=${this.activeTab}&offset_dynamic_id=${offset}`;
         }
         let response = await axios.get(apiVcUrl);
