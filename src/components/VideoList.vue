@@ -30,7 +30,6 @@
             />
           </span>
         </el-tab-pane>
-      </el-tabs>
       <div class="main">
         <div id="col1">
           <div v-for="cardObj in videolist1" :key="cardObj.index">
@@ -58,6 +57,7 @@
 <script>
 import axios from "axios";
 import CardEle from "@/components/ListElement/CardEle.vue";
+import key from 'keymaster'
 export default {
   name: "VideoList",
   components: {
@@ -66,20 +66,20 @@ export default {
   async mounted() {
     // 监听按键以切换tab
     let that = this;
-    key('1', function(){
-      that.activeTab = '8';
+    key("1", function () {
+      that.activeTab = "8";
       that.updateCards();
       localStorage["activeTab"] = that.activeTab;
       return false;
     });
-    key('2', function(){
-      that.activeTab = '512';
+    key("2", function () {
+      that.activeTab = "512";
       that.updateCards();
       localStorage["activeTab"] = that.activeTab;
       return false;
     });
-    key('3', function(){
-      that.activeTab = '65536';
+    key("3", function () {
+      that.activeTab = "65536";
       localStorage["activeTab"] = that.activeTab;
       that.updateCards();
       return false;
