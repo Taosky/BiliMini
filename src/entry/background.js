@@ -1,6 +1,8 @@
 /* eslint-disable */
 let bangumi_num = 0;
 let normal_num = 0
+let is_logged_in = false;
+
 function checkNew(update = false) {
   fetch(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`)
     .then(response => response.json())
@@ -8,10 +10,11 @@ function checkNew(update = false) {
       // 未登录
       if (data['code'] === -6) {
         chrome.action.setBadgeText({ text: 'X' });
+        is_logged_in = false;
         return
       }
       let newInfo = data;
-
+      is_logged_in = true;
       //更新数
       let update_num = 0;
 
@@ -59,6 +62,12 @@ function getNums() {
   });
 }
 
+function getLoginStatus() {
+  return new Promise(resolve => {
+    resolve(is_logged_in);
+  });
+}
+
 //监听popup打开
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   // 返回更新数量
@@ -66,10 +75,16 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
     getNums().then(sendResponse);
     return true;
   }
+  if (message.getLoginStatus) {
+    getLoginStatus().then(sendResponse);
+    return true;
+  }
   if (message.popupOpen) {
     checkNew(true);
   }
 });
+//立即检查一次
+checkNew();
 
 chrome.alarms.create({ periodInMinutes: 0.8 });
 chrome.alarms.onAlarm.addListener(() => {

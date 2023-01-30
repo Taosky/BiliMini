@@ -1,15 +1,15 @@
 <template>
   <div>
-    <video-list></video-list>
+    <video-panel></video-panel>
   </div>
 </template>
 
 <script>
-import VideoList from "@/components/VideoList.vue";
+import VideoPanel from "@/components/VideoPanel.vue";
 
 export default {
   name: "App",
-  components: { VideoList },
+  components: { VideoPanel },
   mounted: function () {
     chrome.runtime.sendMessage({ popupOpen: true });
   },
