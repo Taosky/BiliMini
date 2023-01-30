@@ -1,6 +1,7 @@
 /* eslint-disable */
 let bangumi_num = 0;
-let normal_num = 0
+let normal_num = 0;
+let is_logged_in = false;
 
 function checkNew(update = false) {
   let xhr = new XMLHttpRequest();
@@ -10,9 +11,11 @@ function checkNew(update = false) {
       // 未登录
       if (xhr.responseText.indexOf(`"data":{}`) !== -1) {
         chrome.browserAction.setBadgeText({ text: 'X' });
-        return
+        is_logged_in = false;
+        return;
       }
 
+      is_logged_in = true;
       let newInfo = JSON.parse(xhr.responseText);
 
       //更新数
@@ -55,7 +58,12 @@ function getNums() {
     bangumi_num = 0;
     resolve(nums);
   });
+}
 
+function getLoginStatus() {
+  return new Promise(resolve => {
+    resolve(is_logged_in);
+  });
 }
 
 function start() {
@@ -66,12 +74,18 @@ function start() {
       getNums().then(sendResponse);
       return true;
     }
+    if (message.getLoginStatus) {
+      getLoginStatus().then(sendResponse);
+      return true;
+    }
     if (message.popupOpen) {
       checkNew(true);
     }
   });
+  //立即检查一次
+  checkNew();
   //定时检查订阅
-  setInterval(checkNew, 60000);
+  setInterval(checkNew, 70000);
 }
 
 
