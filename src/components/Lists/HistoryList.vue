@@ -112,7 +112,7 @@ export default {
         this.videolist.push({
           index: history.kid,
           cover: history.cover,
-          link: `https://www.bilibili.com/video/${history.history.bvid}/`,
+          link: history.uri==='' ? `https://www.bilibili.com/video/${history.history.bvid}/` : history.uri,
           date: this.getTimeText(history.view_at),
           title: history.title,
           name: history.author_name,
