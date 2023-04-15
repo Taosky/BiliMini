@@ -28,9 +28,7 @@
       >
         <i class="el-message__icon el-icon-warning"></i>
         <p class="el-message__content">
-          <span
-            >操作太频繁了，稍后重试</span
-          >
+          <span>操作太频繁了，稍后重试</span>
         </p>
       </div>
     </transition>
@@ -79,6 +77,8 @@ import HistoryList from "@/components/Lists/HistoryList.vue";
 
 import axios from "axios";
 import key from "keymaster";
+import { sleep } from "@/utils";
+
 export default {
   name: "VideoPanel",
   components: { DynamicList, HistoryList },
@@ -110,16 +110,22 @@ export default {
       ? localStorage["activeTab"]
       : "8";
     // 判断登录状态
-    chrome.runtime.sendMessage({ getLoginStatus: true }, (logged_in_status) => {
-      console.log("logged_in_status", logged_in_status);
-      this.logged_in_status = logged_in_status;
-      if (logged_in_status === 0) {
-        // 获取直播数量
-        this.checkLive();
-      } else {
-        return;
-      }
+    sleep(1500).then(() => {
+      chrome.runtime.sendMessage(
+        { getLoginStatus: true },
+        (logged_in_status) => {
+          console.log("logged_in_status", logged_in_status);
+          that.logged_in_status = logged_in_status;
+          if (logged_in_status === 0) {
+            // 获取直播数量
+            that.checkLive();
+          } else {
+            return;
+          }
+        }
+      );
     });
+
     // 获取更新数量
     chrome.runtime.sendMessage({ getNums: true }, (nums) => {
       that.badgeShow.normal = nums.normal > 0 ? true : false;
@@ -189,10 +195,10 @@ export default {
   background: white;
 }
 .slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 .slide-fade-leave-active {
-  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+  transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
 .slide-fade-enter, .slide-fade-leave-to
 /* .slide-fade-leave-active for below version 2.1.8 */ {

@@ -1,7 +1,7 @@
 /* eslint-disable */
 let bangumi_num = 0;
 let normal_num = 0
-let logged_in_status = -6;
+let logged_in_status = 0;
 
 function checkNew(update = false) {
   fetch(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`)
