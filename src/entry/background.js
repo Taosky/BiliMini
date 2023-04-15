@@ -1,20 +1,24 @@
 /* eslint-disable */
 let bangumi_num = 0;
 let normal_num = 0
-let is_logged_in = false;
+let logged_in_status = -6;
 
 function checkNew(update = false) {
   fetch(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`)
     .then(response => response.json())
     .then(data => {
+      logged_in_status = data['code'];
       // 未登录
       if (data['code'] === -6) {
         chrome.action.setBadgeText({ text: 'X' });
-        is_logged_in = false;
+        return
+      }
+      // 请求频繁
+      if (data['code'] === 500001) {
+        chrome.action.setBadgeText({ text: '!' });
         return
       }
       let newInfo = data;
-      is_logged_in = true;
       //更新数
       let update_num = 0;
 
@@ -64,7 +68,7 @@ function getNums() {
 
 function getLoginStatus() {
   return new Promise(resolve => {
-    resolve(is_logged_in);
+    resolve(logged_in_status);
   });
 }
 

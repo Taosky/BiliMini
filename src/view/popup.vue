@@ -23,6 +23,12 @@ html {
   height: 650px;
 }
 
+body{
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+
 @media (prefers-color-scheme: dark) {
   .el-tabs__nav-wrap::after {
     background-color: #181818 !important;

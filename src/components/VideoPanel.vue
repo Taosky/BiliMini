@@ -1,5 +1,40 @@
 <template>
   <div id="videopanel">
+    <transition name="slide-fade">
+      <div
+        v-if="logged_in_status === -6"
+        role="alert"
+        class="el-message el-message--error"
+        style="top: 1px; z-index: 2002"
+      >
+        <i class="el-message__icon el-icon-error"></i>
+        <p class="el-message__content">
+          <span
+            >尚未登录Bilibili，<strong
+              ><a href="https://passport.bilibili.com/login" @click="openLogin"
+                >登录</a
+              ></strong
+            >后再试</span
+          >
+        </p>
+      </div>
+    </transition>
+    <transition name="slide-fade">
+      <div
+        v-if="logged_in_status === 500001"
+        role="alert"
+        class="el-message el-message--warning"
+        style="top: 1px; z-index: 2002"
+      >
+        <i class="el-message__icon el-icon-warning"></i>
+        <p class="el-message__content">
+          <span
+            >操作太频繁了，稍后重试</span
+          >
+        </p>
+      </div>
+    </transition>
+
     <el-tabs class="header" v-model="activeTab" @tab-click="handleClick">
       <el-tab-pane name="8">
         <span slot="label"
@@ -75,19 +110,17 @@ export default {
       ? localStorage["activeTab"]
       : "8";
     // 判断登录状态
-    chrome.runtime.sendMessage({ getLoginStatus: true }, (is_logged_in) => {
-      console.log("is_logged_in", is_logged_in);
-      if (!is_logged_in) {
-        this.$message.error({
-          message: "尚未登录，登录后再试",
-          duration: 0,
-          offset: 1,
-        });
+    chrome.runtime.sendMessage({ getLoginStatus: true }, (logged_in_status) => {
+      console.log("logged_in_status", logged_in_status);
+      this.logged_in_status = logged_in_status;
+      if (logged_in_status === 0) {
+        // 获取直播数量
+        this.checkLive();
+      } else {
         return;
       }
     });
     // 获取更新数量
-    this.checkLive();
     chrome.runtime.sendMessage({ getNums: true }, (nums) => {
       that.badgeShow.normal = nums.normal > 0 ? true : false;
       that.badgeShow.bangumi = nums.bangumi > 0 ? true : false;
@@ -96,6 +129,7 @@ export default {
   data: function () {
     return {
       activeTab: "8",
+      logged_in_status: 0,
       badgeShow: {
         normal: false,
         bangumi: false,
@@ -111,14 +145,8 @@ export default {
       localStorage["activeTab"] = this.activeTab;
     },
 
-    isLoggedIn: async function () {
-      let response = await axios.get(
-        `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`
-      );
-      if (response.data.code != 0) {
-        return false;
-      }
-      return true;
+    openLogin: function () {
+      chrome.tabs.create({ url: `https://passport.bilibili.com/login` });
     },
 
     checkLive: async function () {
@@ -159,5 +187,16 @@ export default {
   width: 380px;
   z-index: 100;
   background: white;
+}
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active for below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
 }
 </style>
