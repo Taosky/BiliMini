@@ -38,6 +38,12 @@ html {
     "WenQuanYi Micro Hei";
 }
 
+body{
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    user-select:none;
+}
+
 html::-webkit-scrollbar {
   width: 0px;
 }

@@ -39,6 +39,14 @@
 <script>
 import axios from "axios";
 import CardEle from "@/components/Elements/CardEle.vue";
+import {
+  forbid_scroll,
+  allow_scroll,
+  getRetime,
+  resetScroller,
+  sleep,
+} from "../../utils";
+
 export default {
   name: "DynamicList",
   components: {
@@ -56,7 +64,7 @@ export default {
       handler(newVal) {
         console.log("activetab变化: ", newVal);
         if (this.isDynamic()) {
-          this.resetScroller();
+          resetScroller();
           this.updateCards();
         }
       },
@@ -130,10 +138,6 @@ export default {
     isLive: function () {
       return this.activeTab === "65536" ? true : false;
     },
-    resetScroller: function () {
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-    },
     // 监听滚动条
     listenScoller: function () {
       let that = this;
@@ -165,25 +169,6 @@ export default {
     },
     get_bvid: function (short_link) {
       return short_link.match(/\/(BV\w+)$/)[1];
-    },
-    getRetime: function (createtime) {
-      let now = Date.parse(new Date()) / 1000;
-      let limit = now - createtime;
-      let content = "";
-      if (limit < 60) {
-        content = "就在刚刚";
-      } else if (limit >= 60 && limit < 3600) {
-        content = Math.floor(limit / 60) + "分钟前";
-      } else if (limit >= 3600 && limit < 86400) {
-        content = Math.floor(limit / 3600) + "小时前";
-      } else if (limit >= 86400 && limit < 2592000) {
-        content = Math.floor(limit / 86400) + "天之前";
-      } else if (limit >= 2592000 && limit < 31104000) {
-        content = Math.floor(limit / 2592000) + "个月前";
-      } else {
-        content = "很久以前";
-      }
-      return content;
     },
     genLiveData: function (response) {
       let cardIndex = 0;
@@ -223,16 +208,13 @@ export default {
 
         // }
         // 时间显示字符串
-        cardObj.retime = that.getRetime(card.desc.timestamp);
+        cardObj.retime = getRetime(card.desc.timestamp);
         if (cardIndex % 2 === 1) {
           that.data[that.activeTab].videolist1.push(cardObj);
         } else {
           that.data[that.activeTab].videolist2.push(cardObj);
         }
       });
-    },
-    sleep(ms) {
-      return new Promise((resolve) => setTimeout(resolve, ms));
     },
     updateCards: async function (offset = "", loadMore = false) {
       if (this.loading) {
@@ -250,6 +232,7 @@ export default {
       }
       // loading
       this.loading = true;
+      forbid_scroll();
       // 直播/视频
       if (this.isLive()) {
         let response = await axios.get(
@@ -265,8 +248,9 @@ export default {
         this.genVideoData(response);
       }
       let that = this;
-      this.sleep(500).then(() => {
+      sleep(500).then(() => {
         that.loading = false;
+        allow_scroll();
       });
     },
   },

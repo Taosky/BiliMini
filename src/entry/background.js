@@ -1,21 +1,30 @@
 /* eslint-disable */
 let bangumi_num = 0;
 let normal_num = 0;
-let is_logged_in = false;
+let logged_in_status = 0;
 
 function checkNew(update = false) {
   let xhr = new XMLHttpRequest();
   xhr.open("GET", `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`, true);
   xhr.onreadystatechange = function () {
     if (xhr.readyState === 4) {
+      
       // 未登录
-      if (xhr.responseText.indexOf(`"data":{}`) !== -1) {
+      if (xhr.responseText.indexOf(`"code":-6`) !== -1) {
         chrome.browserAction.setBadgeText({ text: 'X' });
-        is_logged_in = false;
+        logged_in_status = -6;
         return;
       }
-
-      is_logged_in = true;
+      // 请求频繁
+      if (xhr.responseText.indexOf(`"code":500001`) !== -1) {
+        chrome.browserAction.setBadgeText({ text: '!' });
+        logged_in_status = 500001;
+        return;
+      } 
+      if (xhr.responseText.indexOf(`"code":0`) !== -1) {
+        logged_in_status = 0;
+      }
+      
       let newInfo = JSON.parse(xhr.responseText);
 
       //更新数
@@ -62,7 +71,7 @@ function getNums() {
 
 function getLoginStatus() {
   return new Promise(resolve => {
-    resolve(is_logged_in);
+    resolve(logged_in_status);
   });
 }
 
