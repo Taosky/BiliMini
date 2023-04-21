@@ -7,14 +7,14 @@
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
-      <a class="video-img" :href="cardObj.short_link"
+      <a class="video-img" :href="cardObj.short_link?cardObj.short_link:cardObj.short_link_v2"
         ><img class="cover" :src="cardObj.pic" alt="tumb" style="width: 100%"
       /></a>
       <span class="pub-time">{{ cardObj.retime }}</span>
       <div class="container">
         <a
           style="text-decoration: none; color: black"
-          :href="cardObj.short_link"
+          :href="cardObj.short_link?cardObj.short_link:cardObj.short_link_v2"
         >
           <h5 class="title">
             <b> {{ cardObj.title }}</b>
