@@ -192,7 +192,11 @@ export default {
     genVideoData: function (response) {
       let cardIndex = 0;
       let that = this;
-      if (response.data.data.cards.length < 20) {
+      if (!response.data.data.cards) {
+        that.data[that.activeTab].noMore = true;
+        return;
+      }
+      if (!response.data.data.cards || response.data.data.cards.length < 20) {
         that.data[that.activeTab].noMore = true;
       }
       response.data.data.cards.forEach(function (card) {
