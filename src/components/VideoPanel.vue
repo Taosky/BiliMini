@@ -11,7 +11,7 @@
         <p class="el-message__content">
           <span
             >尚未登录Bilibili，<strong
-              ><a href="https://passport.bilibili.com/login" @click="openLogin"
+              ><a href="#" @click="openLogin"
                 >登录</a
               ></strong
             >后再试</span
