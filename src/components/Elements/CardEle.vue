@@ -278,6 +278,7 @@ img {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-all;
+  font-size: 13px;
 }
 
 .title:hover {

@@ -311,6 +311,9 @@ export default {
   margin-top: 60px;
 }
 
+#col1 {
+  margin-right: 5px;
+}
 #col1,
 #col2 {
   width: 48%;
