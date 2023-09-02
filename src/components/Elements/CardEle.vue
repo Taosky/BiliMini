@@ -39,14 +39,14 @@
       <div class="container">
         <a style="text-decoration: none; color: black" :href="cardObj.url" @click="handleLink(cardObj.url)">
           <h4 class="title">
-            <b> {{ cardObj.new_desc }} </b>
+            <b> {{ cardObj.title }} </b>
           </h4>
         </a>
         <div class="up">
           <a class="up-link" :href="cardObj.url" @click="handleLink(cardObj.url)" @mouseenter="handleMouseEnter"
             @mouseleave="handleMouseLeave">
-            <img class="avatar" :src="cardObj.apiSeasonInfo.cover" />
-            <span class="up-name">{{ cardObj.apiSeasonInfo.title }}</span>
+            <img class="avatar" :src="cardObj.cover" />
+            <span class="up-name">{{ cardObj.name }}</span>
           </a>
         </div>
       </div>
@@ -99,7 +99,7 @@ export default {
         a.target.children[2].style.opacity = 0.7;
         a.target.children[3].children[0].style.color = "cadetblue";
       } else if (a.target.className == "up-link") {
-        a.target.parentElement.parentElement.parentElement.children[2].children[0].style.color =
+        a.target.parentElement.parentElement.parentElement.children[3].children[0].style.color =
           "black";
       }
     },
@@ -109,7 +109,7 @@ export default {
         a.target.children[2].style.opacity = 0;
         a.target.children[3].children[0].style.color = "black";
       } else if (a.target.className == "up-link") {
-        a.target.parentElement.parentElement.parentElement.children[2].children[0].style.color =
+        a.target.parentElement.parentElement.parentElement.children[3].children[0].style.color =
           "cadetblue";
       }
     },

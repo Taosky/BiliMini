@@ -73,13 +73,15 @@ export default {
           videolist1: [],
           videolist2: [],
           noMore: false,
+          loaded: false,
+          page: 1,
         },
         65536: {
           videolist1: [],
           videolist2: [],
           noMore: false,
           loaded: false,
-          livePage: 1,
+          page: 1,
         },
         // 防止报错
         1: {
@@ -101,17 +103,14 @@ export default {
         ? { link: "https://live.bilibili.com/", text: "全部直播" }
         : { link: "https://t.bilibili.com/", text: "查看动态页" };
     },
+    //此处Dyncmic包含番剧
     lastDynamicId() {
       if (this.isLive() || !this.isDynamic()) {
         return;
       }
-      return this.data[this.activeTab].videolist2[
-        this.data[this.activeTab].videolist2.length - 1
-      ].dynamicId
-        ? this.data[this.activeTab].videolist2[
-          this.data[this.activeTab].videolist2.length - 1
-        ].dynamicId
-        : "";
+      return this.data[this.activeTab].videolist1.length === this.data[this.activeTab].videolist2.length
+        ? this.data[this.activeTab].videolist2[this.data[this.activeTab].videolist2.length - 1].dynamicId
+        : this.data[this.activeTab].videolist1[this.data[this.activeTab].videolist1.length - 1].dynamicId
     },
     el_loading_bg() {
       return window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -129,6 +128,9 @@ export default {
     },
     isLive: function () {
       return this.activeTab === "65536" ? true : false;
+    },
+    isBangumi: function () {
+      return this.activeTab === "512" ? true : false;
     },
     // 监听滚动条
     listenScoller: function () {
@@ -150,12 +152,14 @@ export default {
     },
     // 无限加载
     infLoad: function () {
+      console.log(this.loading || this.data[this.activeTab].noMore)
       if (this.loading || this.data[this.activeTab].noMore) {
+
         return;
       }
-      if (this.isLive()) {
-        console.log("直播页面滚动加载");
-        this.data[this.activeTab].livePage += 1;
+      if (this.isLive() || this.isBangumi()) {
+        console.log("直播/番剧页面滚动加载");
+        this.data[this.activeTab].page += 1;
       }
       this.updateCards(this.lastDynamicId, true);
     },
@@ -187,7 +191,35 @@ export default {
         }
       });
     },
-    genVideoData: function (response) {
+    genBangumiData: function (response) {
+      let cardIndex = 0;
+      let that = this;
+      that.data[that.activeTab].loaded = true;
+      console.log(!response.data.data.items.has_more)
+      if (!response.data.data.has_more) {
+        that.data[that.activeTab].noMore = true;
+      }
+      response.data.data.items.forEach(function (item) {
+        cardIndex += 1;
+        let cardObj = Object();
+        cardObj.index = item.id_str;
+        cardObj.dynamicId = item.id_str;
+        cardObj._type = 512;
+        cardObj.retime = item.modules.module_author.pub_time;
+        cardObj.face = item.modules.module_author.face;
+        cardObj.name = item.modules.module_author.name;
+        cardObj.cover = item.modules.module_dynamic.major.pgc.cover;
+        cardObj.url = item.modules.module_dynamic.major.pgc.jump_url;
+        cardObj.title = item.modules.module_dynamic.major.pgc.title.replace(cardObj.name + '：', '');
+        cardObj
+        if (cardIndex % 2 === 1) {
+          that.data[that.activeTab].videolist1.push(cardObj);
+        } else {
+          that.data[that.activeTab].videolist2.push(cardObj);
+        }
+      });
+    },
+    genDynamicData: function (response) {
       let cardIndex = 0;
       let that = this;
       if (!response.data.data.cards) {
@@ -235,6 +267,10 @@ export default {
         if (this.isLive() && this.data[this.activeTab].loaded) {
           return;
         }
+        // 番剧即使没有内容已加载后也不再刷新
+        if (this.isBangumi() && this.data[this.activeTab].loaded) {
+          return;
+        }
       }
       // loading
       this.loading = true;
@@ -242,9 +278,15 @@ export default {
       // 直播/视频
       if (this.isLive()) {
         let response = await axios.get(
-          `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=${this.data["65536"].livePage}&pagesize=10`
+          `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=${this.data["65536"].page}&pagesize=10`
         );
         this.genLiveData(response);
+      } else if (this.isBangumi()) {
+        let response = await axios.get(
+          `https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?timezone_offset=-480&type=pgc&offset=${offset}&page=${this.data["512"].page}`
+        );
+        this.genBangumiData(response);
+
       } else {
         await this.getToWatchs();
         let apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=${this.activeTab}`;
@@ -252,7 +294,7 @@ export default {
           apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_history?type_list=${this.activeTab}&offset_dynamic_id=${offset}`;
         }
         let response = await axios.get(apiVcUrl);
-        this.genVideoData(response);
+        this.genDynamicData(response);
       }
       let that = this;
       sleep(500).then(() => {
