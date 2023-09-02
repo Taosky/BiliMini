@@ -1,35 +1,22 @@
 <template>
   <div class="main">
-    <el-row
-      v-loading.fullscreen.lock="loading"
-      :element-loading-background="el_loading_bg"
-    >
+    <el-row v-loading.fullscreen.lock="loading" :element-loading-background="el_loading_bg">
       <div>
         <div id="col1">
-          <div
-            v-for="cardObj in data[activeTab].videolist1"
-            :key="cardObj.index"
-          >
+          <div v-for="cardObj in data[activeTab].videolist1" :key="cardObj.index">
             <card-ele :cardObj="cardObj"></card-ele>
           </div>
         </div>
         <div id="col2">
-          <div
-            v-for="cardObj in data[activeTab].videolist2"
-            :key="cardObj.index"
-          >
+          <div v-for="cardObj in data[activeTab].videolist2" :key="cardObj.index">
             <card-ele :cardObj="cardObj"></card-ele>
           </div>
         </div>
       </div>
-      <p
-        style="text-align: center; font-size: 14px"
-        v-show="data[activeTab].noMore"
-      >
+      <p style="text-align: center; font-size: 14px" v-show="data[activeTab].noMore">
         (´・ω・｀) 没有更多了
       </p>
-      <a v-show="data[activeTab].noMore" :href="more['link']" @click="seeMore"
-        ><button class="moreBtn">
+      <a v-show="data[activeTab].noMore" :href="more['link']" @click="seeMore"><button class="moreBtn">
           {{ more["text"] }}
         </button>
       </a>
@@ -74,7 +61,7 @@ export default {
   data: function () {
     return {
       loading: false,
-      toWatchAids : [],
+      toWatchAids: [],
       // 各标签页数据
       data: {
         8: {
@@ -122,8 +109,8 @@ export default {
         this.data[this.activeTab].videolist2.length - 1
       ].dynamicId
         ? this.data[this.activeTab].videolist2[
-            this.data[this.activeTab].videolist2.length - 1
-          ].dynamicId
+          this.data[this.activeTab].videolist2.length - 1
+        ].dynamicId
         : "";
     },
     el_loading_bg() {
@@ -175,7 +162,7 @@ export default {
     get_bvid: function (short_link) {
       return short_link.match(/\/(BV\w+)$/)[1];
     },
-    getToWatchs: async function() {
+    getToWatchs: async function () {
       let response = await axios.get('https://api.bilibili.com/x/v2/history/toview');
       response.data.data.list.forEach((one) => {
         this.toWatchAids.push(one.aid);
@@ -217,7 +204,7 @@ export default {
         cardObj._type = card.desc.type;
         cardObj.dynamicId = card.desc.dynamic_id_str;
         // 稍后再看标记
-        if (that.toWatchAids.indexOf(cardObj.aid) !=-1){
+        if (that.toWatchAids.indexOf(cardObj.aid) != -1) {
           cardObj.toWatch = true;
         }
         // 获取视频时间点截图
@@ -281,6 +268,7 @@ export default {
 .main {
   margin-top: 60px;
 }
+
 #col1,
 #col2 {
   width: 48%;

@@ -23,22 +23,25 @@ html {
   height: 650px;
 }
 
-body{
-    -moz-user-select:none;
-    -webkit-user-select:none;
-    user-select:none;
+body {
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 @media (prefers-color-scheme: dark) {
   .el-tabs__nav-wrap::after {
     background-color: #181818 !important;
   }
+
   .el-tabs__item {
     color: white !important;
   }
+
   .el-tabs__item:hover {
     color: #409eff !important;
   }
+
   html {
     scrollbar-color: gray #282828;
   }
@@ -60,11 +63,12 @@ body {
   text-align: center;
   position: absolute;
 }
+
 #app {
   opacity: 0;
   transition: opacity 0.5s ease-in;
 }
+
 .header .el-tabs__item {
   font-size: 16px;
-}
-</style>
+}</style>

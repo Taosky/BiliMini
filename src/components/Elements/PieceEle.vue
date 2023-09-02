@@ -35,6 +35,7 @@ export default {
     color: rgb(219, 215, 215) !important;
   }
 }
+
 .piece {
   display: flex;
   border-radius: 5px;
@@ -45,9 +46,11 @@ export default {
   color: black;
   text-decoration: none;
 }
+
 .piece:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.271);
 }
+
 .video-img {
   position: relative;
   flex-shrink: 0;
@@ -56,6 +59,7 @@ export default {
   height: 72px;
   border-radius: 4px;
 }
+
 picture {
   position: relative;
   display: inline-block;
@@ -64,18 +68,21 @@ picture {
   height: 100%;
   vertical-align: middle;
 }
+
 img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: inherit;
 }
+
 .video-info {
   display: flex;
   flex: 1 auto;
   flex-direction: column;
   justify-content: space-between;
 }
+
 .title {
   margin-bottom: 4px;
   height: 36px;
@@ -91,6 +98,7 @@ img {
   line-break: anywhere;
   -webkit-line-clamp: 2;
 }
+
 .date,
 .name {
   display: flex;
@@ -98,5 +106,4 @@ img {
   color: rgb(152, 152, 152);
   font-size: 12px;
   line-height: 16px;
-}
-</style>
+}</style>

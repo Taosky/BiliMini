@@ -7,7 +7,8 @@
           style="width: 100%" /></a>
       <span class="pub-time">{{ cardObj.retime }}</span>
       <span class="watch-later">
-        <img v-if="addedToWatch" @click="handleWatchLater(cardObj.aid, add=false)" class="add-towatch" src="../../assets/watch-later-2.png" />
+        <img v-if="addedToWatch" @click="handleWatchLater(cardObj.aid, add = false)" class="add-towatch"
+          src="../../assets/watch-later-2.png" />
         <img v-else @click="handleWatchLater(cardObj.aid)" class="add-towatch" src="../../assets/watch-later-1.png" />
       </span>
       <div class="container">

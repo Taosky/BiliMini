@@ -1,9 +1,6 @@
 <template>
   <div class="main">
-    <el-row
-      v-loading.fullscreen.lock="loading"
-      :element-loading-background="el_loading_bg"
-    >
+    <el-row v-loading.fullscreen.lock="loading" :element-loading-background="el_loading_bg">
       <div>
         <div id="col">
           <div v-for="pieceObj in videolist" :key="pieceObj.index">
@@ -11,8 +8,7 @@
           </div>
         </div>
       </div>
-      <a href="https://www.bilibili.com/account/history"
-        ><button class="moreBtn" onclick="seeMore">查看全部</button>
+      <a href="https://www.bilibili.com/account/history"><button class="moreBtn" onclick="seeMore">查看全部</button>
       </a>
     </el-row>
   </div>
@@ -45,7 +41,7 @@ export default {
     },
   },
   methods: {
-    
+
     genVideoData: function (response) {
       if (!response.data.data?.list) {
         return;

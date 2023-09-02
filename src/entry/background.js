@@ -23,10 +23,10 @@ function checkNew(update = false) {
       let update_num = 0;
 
       let current_dynamic_id = undefined;
-      chrome.storage.sync.get(['latest_dynamic_id'], function (result) {
+      chrome.storage.local.get(['latest_dynamic_id'], function (result) {
         current_dynamic_id = result.latest_dynamic_id;
         if (!current_dynamic_id || update === true) {
-          chrome.storage.sync.set({ "latest_dynamic_id": newInfo.data.cards[0].desc.dynamic_id }, function () {
+          chrome.storage.local.set({ "latest_dynamic_id": newInfo.data.cards[0].desc.dynamic_id }, function () {
             console.log('latest_dynamic_id 重置');
             console.log(current_dynamic_id);
             chrome.action.setBadgeText({ text: '' });

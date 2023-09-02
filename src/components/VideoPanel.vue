@@ -1,31 +1,18 @@
 <template>
   <div id="videopanel">
     <transition name="slide-fade">
-      <div
-        v-if="logged_in_status === -6"
-        role="alert"
-        class="el-message el-message--error"
-        style="top: 1px; z-index: 2002"
-      >
+      <div v-if="logged_in_status === -6" role="alert" class="el-message el-message--error"
+        style="top: 1px; z-index: 2002">
         <i class="el-message__icon el-icon-error"></i>
         <p class="el-message__content">
-          <span
-            >尚未登录Bilibili，<strong
-              ><a href="https://passport.bilibili.com/login" @click="openLogin"
-                >登录</a
-              ></strong
-            >后再试</span
-          >
+          <span>尚未登录Bilibili，<strong><a href="https://passport.bilibili.com/login"
+                @click="openLogin">登录</a></strong>后再试</span>
         </p>
       </div>
     </transition>
     <transition name="slide-fade">
-      <div
-        v-if="logged_in_status === 500001"
-        role="alert"
-        class="el-message el-message--warning"
-        style="top: 1px; z-index: 2002"
-      >
+      <div v-if="logged_in_status === 500001" role="alert" class="el-message el-message--warning"
+        style="top: 1px; z-index: 2002">
         <i class="el-message__icon el-icon-warning"></i>
         <p class="el-message__content">
           <span>操作太频繁了，稍后重试</span>
@@ -35,25 +22,18 @@
 
     <el-tabs class="header" v-model="activeTab" @tab-click="handleClick">
       <el-tab-pane name="8">
-        <span slot="label"
-          >投稿
+        <span slot="label">投稿
           <el-badge v-show="badgeShow.normal" is-dot class="label-badge" />
         </span>
       </el-tab-pane>
       <el-tab-pane name="512">
-        <span slot="label"
-          >番剧
+        <span slot="label">番剧
           <el-badge v-show="badgeShow.bangumi" is-dot class="label-badge" />
         </span>
       </el-tab-pane>
       <el-tab-pane name="65536">
-        <span slot="label"
-          >直播
-          <el-badge
-            v-show="badgeShow.live"
-            :value="liveNumStr"
-            class="label-badge"
-          />
+        <span slot="label">直播
+          <el-badge v-show="badgeShow.live" :value="liveNumStr" class="label-badge" />
         </span>
       </el-tab-pane>
       <el-tab-pane name="1">
@@ -63,10 +43,7 @@
         <span slot="label">收藏</span>
       </el-tab-pane> -->
     </el-tabs>
-    <dynamic-list
-      v-show="activeTab === '8' || activeTab === '512' || activeTab === '65536'"
-      :activeTab="activeTab"
-    />
+    <dynamic-list v-show="activeTab === '8' || activeTab === '512' || activeTab === '65536'" :activeTab="activeTab" />
     <history-list v-show="activeTab === '1'"></history-list>
   </div>
 </template>
@@ -186,6 +163,7 @@ export default {
 #videopanel {
   width: 380px;
 }
+
 .header {
   position: fixed;
   height: 42px;
@@ -194,14 +172,20 @@ export default {
   z-index: 100;
   background: white;
 }
+
 .slide-fade-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-fade-leave-active {
   transition: all 0.8s cubic-bezier(1, 0.5, 0.8, 1);
 }
-.slide-fade-enter, .slide-fade-leave-to
-/* .slide-fade-leave-active for below version 2.1.8 */ {
+
+.slide-fade-enter,
+.slide-fade-leave-to
+
+/* .slide-fade-leave-active for below version 2.1.8 */
+  {
   transform: translateX(10px);
   opacity: 0;
 }
