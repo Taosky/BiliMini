@@ -74,6 +74,7 @@ export default {
   data: function () {
     return {
       loading: false,
+      toWatchAids : [],
       // 各标签页数据
       data: {
         8: {
@@ -174,7 +175,12 @@ export default {
     get_bvid: function (short_link) {
       return short_link.match(/\/(BV\w+)$/)[1];
     },
-
+    getToWatchs: async function() {
+      let response = await axios.get('https://api.bilibili.com/x/v2/history/toview');
+      response.data.data.list.forEach((one) => {
+        this.toWatchAids.push(one.aid);
+      })
+    },
     genLiveData: function (response) {
       let cardIndex = 0;
       let that = this;
@@ -210,6 +216,10 @@ export default {
         cardObj.index = cardObj.aid;
         cardObj._type = card.desc.type;
         cardObj.dynamicId = card.desc.dynamic_id_str;
+        // 稍后再看标记
+        if (that.toWatchAids.indexOf(cardObj.aid) !=-1){
+          cardObj.toWatch = true;
+        }
         // 获取视频时间点截图
         // if (cardObj._type === 8) {
         //   let bvid = that.get_bvid(cardObj.short_link);
@@ -249,6 +259,7 @@ export default {
         );
         this.genLiveData(response);
       } else {
+        await this.getToWatchs();
         let apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=${this.activeTab}`;
         if (offset != "") {
           apiVcUrl = `https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_history?type_list=${this.activeTab}&offset_dynamic_id=${offset}`;

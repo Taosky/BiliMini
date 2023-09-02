@@ -94,3 +94,25 @@ chrome.alarms.create({ periodInMinutes: 0.8 });
 chrome.alarms.onAlarm.addListener(() => {
   checkNew();
 });
+
+// 处理需要保持origin头的情况
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.declarativeNetRequest.updateDynamicRules(
+    {
+      addRules: [
+        {
+          id: 1,
+          priority: 1,
+          action: {
+            type: 'modifyHeaders',
+            requestHeaders: [{
+              header: 'origin', operation: 'set', value: 'https://www.bilibili.com'
+            }],
+          },
+          condition: { urlFilter: 'https://api.bilibili.com/x/v2/history/toview/', resourceTypes: ['xmlhttprequest'] },
+        }
+      ],
+      removeRuleIds: [1]
+    },
+  );
+});
