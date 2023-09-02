@@ -25,6 +25,7 @@ chromeName.forEach((name) => {
 })
 
 const isDevMode = process.env.NODE_ENV === 'development'
+const platform = process.env.PLATFORM ? process.env.NODE_PLATFORM : 'chrome'
 
 module.exports = {
   pages,
@@ -34,7 +35,7 @@ module.exports = {
       {
         patterns: [
           {
-            from: path.resolve(`src/manifest.${process.env.NODE_ENV}.json`),
+            from: path.resolve(`src/manifest.${platform}.json`),
             to: `${path.resolve('dist')}/manifest.json`
           },
           {
