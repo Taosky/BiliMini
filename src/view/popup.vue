@@ -18,6 +18,7 @@ export default {
 
 <style>
 html {
+  font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   -ms-overflow-style: none;
   overflow: -moz-scrollbars-none;
   height: 650px;
@@ -71,4 +72,5 @@ body {
 
 .header .el-tabs__item {
   font-size: 16px;
-}</style>
+}
+</style>
