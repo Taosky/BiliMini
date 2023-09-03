@@ -25,7 +25,7 @@ chromeName.forEach((name) => {
 })
 
 const isDevMode = process.env.NODE_ENV === 'development'
-const platform = process.env.PLATFORM ? process.env.NODE_PLATFORM : 'chrome'
+const platform = process.env.NODE_PLATFORM ? process.env.NODE_PLATFORM : 'chrome'
 
 module.exports = {
   pages,
