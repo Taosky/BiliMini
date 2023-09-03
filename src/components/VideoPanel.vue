@@ -5,8 +5,16 @@
         style="top: 1px; z-index: 2002">
         <i class="el-message__icon el-icon-error"></i>
         <p class="el-message__content">
-          <span>尚未登录Bilibili，<strong><a href="https://passport.bilibili.com/login"
-                @click="openLogin">登录</a></strong>后再试</span>
+          <span>尚未登录Bilibili，<strong><a href="#" @click="openLogin">登录</a></strong>后再试</span>
+        </p>
+      </div>
+    </transition>
+    <transition name="slide-fade">
+      <div v-if="!permissionGranted" role="alert" class="el-message el-message--error"
+        style="top: 1px; z-index: 2002">
+        <i class="el-message__icon el-icon-error"></i>
+        <p class="el-message__content">
+          <span>缺少API权限，在<strong style="color:darkcyan">浏览器扩展设置页面</strong>授权后再试</span>
         </p>
       </div>
     </transition>
@@ -86,6 +94,19 @@ export default {
     this.activeTab = localStorage["activeTab"]
       ? localStorage["activeTab"]
       : "8";
+    // 判断权限
+    const testResult = await chrome.permissions.contains({
+      origins: [
+        "*://*.bilibili.com/",
+        "*://api.vc.bilibili.com/",
+        "*://api.live.bilibili.com/"
+      ],
+    });
+    console.log("权限检查: " + testResult)
+    this.permissionGranted = testResult;
+    if (!testResult) {
+      return;
+    }
     // 判断登录状态
     sleep(1500).then(() => {
       chrome.runtime.sendMessage(
@@ -113,6 +134,7 @@ export default {
     return {
       activeTab: "8",
       logged_in_status: 0,
+      permissionGranted: true,
       badgeShow: {
         normal: false,
         bangumi: false,
@@ -131,7 +153,6 @@ export default {
     openLogin: function () {
       chrome.tabs.create({ url: `https://passport.bilibili.com/login` });
     },
-
     checkLive: async function () {
       let response = await axios.get(
         `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=11`
