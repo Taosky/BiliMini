@@ -1,15 +1,15 @@
 <template>
   <div>
-    <video-panel></video-panel>
+    <main-panel></main-panel>
   </div>
 </template>
 
 <script>
-import VideoPanel from "@/components/VideoPanel.vue";
+import MainPanel from "@/components/MainPanel.vue";
 
 export default {
   name: "App",
-  components: { VideoPanel },
+  components: { MainPanel },
   mounted: function () {
     chrome.runtime.sendMessage({ popupOpen: true });
   },
@@ -47,10 +47,6 @@ body {
     scrollbar-color: gray #282828;
   }
 }
-
-/* html::-webkit-scrollbar {
-    width: 0px;
-  } */
 
 body {
   overflow-x: hidden;

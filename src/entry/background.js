@@ -1,118 +1,109 @@
 /* eslint-disable */
-let bangumi_num = 0;
-let normal_num = 0
-let logged_in_status = 0;
+let bangumiNum = 0;
+let videoNum = 0
+let loggedInStatus = 0;
 
-function checkNew(update = false) {
-  fetch(`https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new?uid=&type_list=8,512,4099`)
-    .then(response => response.json())
-    .then(data => {
-      logged_in_status = data['code'];
-      // 未登录
-      if (data['code'] === -6) {
-        chrome.action.setBadgeText({ text: 'X' });
-        return
-      }
-      // 请求频繁
-      if (data['code'] === 500001) {
-        chrome.action.setBadgeText({ text: '!' });
-        return
-      }
-      let newInfo = data;
-      //更新数
-      let update_num = 0;
 
-      let current_dynamic_id = undefined;
-      chrome.storage.local.get(['latest_dynamic_id'], function (result) {
-        current_dynamic_id = result.latest_dynamic_id;
-        if (!current_dynamic_id || update === true) {
-          chrome.storage.local.set({ "latest_dynamic_id": newInfo.data.cards[0].desc.dynamic_id }, function () {
-            console.log('latest_dynamic_id 重置');
-            console.log(current_dynamic_id);
-            chrome.action.setBadgeText({ text: '' });
-          });
-        }
-        else {
-          newInfo.data.cards.forEach(function (card) {
-            if (card.desc.dynamic_id > current_dynamic_id) {
-              update_num += 1
-              // 不同类型更新数
-              if (card.desc.type === 8) {
-                normal_num += 1
-              } else if (card.desc.type === 512) {
-                bangumi_num += 1
-              }
-            }
-          });
-          //角标
-          if (update_num >= 10) {
-            chrome.action.setBadgeText({ text: "10+" });
-          } else if (update_num < 10 && update_num > 0)
-            chrome.action.setBadgeText({ text: String(update_num) });
-          else {
-            chrome.action.setBadgeText({ text: '' });
-          }
-        }
+//检查新投稿及登录状态
+async function checkNew(resetBadge = false) {
+  const response = await fetch(`https://api.bilibili.com/x/polymer/web-dynamic/v1/feed/all?typ=all`);
+  const data = await response.json();
+  //登录状态
+  loggedInStatus = data['code'];
+  if (data['code'] === -101) {
+    chrome.action.setBadgeText({ text: 'X' });
+    return;
+  }
+  if (data['code'] != 0) {
+    chrome.action.setBadgeText({ text: '!' });
+    return;
+  }
+
+  //动态数量
+  let updateNum = 0;
+  let currentBaseline = undefined;
+  chrome.storage.local.get(['updateBaseline'], function (result) {
+    currentBaseline = result.updateBaseline;
+    //重置角标或首次打开时更新存储
+    if (resetBadge || !currentBaseline) {
+      chrome.storage.local.set({ "updateBaseline": data.data.update_baseline }, function () {
+        console.log('updateBaseline更新: ');
+        console.log(currentBaseline)
+        console.log(data.data.update_baseline)
+        chrome.action.setBadgeText({ text: '' });
       });
-    });
+    }
+    else {
+      const items = data.data.items;
+      //对比updateBaseline, 计算更新数量
+      for (let i = 0; i < items.length; i++) {
+        let item = items[i];
+        if (currentBaseline !== item.id_str) {
+          updateNum += 1
+          if (item.type === 'DYNAMIC_TYPE_AV') {
+            videoNum += 1;
+          }
+          if (item.type === 'DYNAMIC_TYPE_PGC') {
+            bangumiNum += 1
+          }
+        } else {
+          break;
+        }
+      }
+      //更新角标
+      if (updateNum >= 10) {
+        chrome.action.setBadgeText({ text: "10+" });
+      } else if (updateNum < 10 && updateNum > 0)
+        chrome.action.setBadgeText({ text: String(updateNum) });
+      else {
+        chrome.action.setBadgeText({ text: '' });
+      }
+    }
+  });
 }
 
+
+//用于popup中获取数量
 function getNums() {
   return new Promise(resolve => {
-    let nums = { bangumi: bangumi_num, normal: normal_num };
-    normal_num = 0;
-    bangumi_num = 0;
+    let nums = { bangumi: bangumiNum, video: videoNum };
+    videoNum = 0;
+    bangumiNum = 0;
     resolve(nums);
   });
 }
 
+//用于popup中获取登录状态
 function getLoginStatus() {
   return new Promise(resolve => {
-    resolve(logged_in_status);
+    resolve(loggedInStatus);
   });
 }
 
-//监听popup打开
+//监听popup消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-  // 返回更新数量
+  //返回更新数量
   if (message.getNums) {
     getNums().then(sendResponse);
     return true;
   }
+  //返回登陆状态
   if (message.getLoginStatus) {
     getLoginStatus().then(sendResponse);
     return true;
   }
+  //打开弹窗时更新并重置角标
   if (message.popupOpen) {
-    checkNew(true);
+    checkNew(resetBadge = true);
   }
 });
-//立即检查一次
-checkNew();
 
+
+// 定时器
 chrome.alarms.create({ periodInMinutes: 0.8 });
 chrome.alarms.onAlarm.addListener(() => {
   checkNew();
 });
 
-// 处理需要保持origin头的情况
-chrome.runtime.onInstalled.addListener(() => {
-  chrome.declarativeNetRequest.updateDynamicRules(
-    {
-      addRules: [
-        {
-          id: 1,
-          priority: 1,
-          action: {
-            type: 'modifyHeaders',
-            requestHeaders: [{
-              header: 'origin', operation: 'set', value: 'https://www.bilibili.com'
-            }],
-          },
-          condition: { urlFilter: 'https://api.bilibili.com/x/v2/history/toview/', resourceTypes: ['xmlhttprequest'] },
-        }
-      ],
-      removeRuleIds: [1]
-    },
-  );
-});
+//立即检查更新
+checkNew();

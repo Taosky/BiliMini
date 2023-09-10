@@ -17,10 +17,17 @@
     "storage"
   ],
   "host_permissions": [
-    "*://*.bilibili.com/",
-    "*://api.vc.bilibili.com/",
-    "*://api.live.bilibili.com/"
+    "*://*.bilibili.com/*"
   ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "biliapi",
+        "enabled": true,
+        "path": "rules_biliapi.json"
+      }
+    ]
+  },
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",

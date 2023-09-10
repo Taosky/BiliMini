@@ -1,79 +1,30 @@
 <template>
   <div>
-    <!-- type:8 普通视频 -->
-    <div class="card" v-if="cardObj._type === 8" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-      <a class="video-img" :href="cardObj.short_link ? cardObj.short_link : cardObj.short_link_v2"
-        @click="handleLink(cardObj.short_link, cardObj.short_link_v2)"><img class="cover" :src="cardObj.pic" alt="tumb"
-          style="width: 100%" /></a>
-      <span class="pub-time">{{ cardObj.retime }}</span>
-      <span class="watch-later">
+    <!-- 动态 -->
+    <div class="card" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
+      <a class="video-img" @click="handleLink(cardObj.media_link)"><img class="cover" :src="cardObj.media_cover"
+          alt="tumb" style="width: 100%" /></a>
+      <span class="show-text">{{ cardObj.show_text }}</span>
+      <!-- 稍后再看 -->
+      <span v-if="cardObj.type_ === 'video'" class="watch-later">
         <img v-if="addedToWatch" @click="handleWatchLater(cardObj.aid, add = false)" class="add-towatch"
           src="../../assets/watch-later-2.png" title="取消稍后再看" />
-        <img v-else @click="handleWatchLater(cardObj.aid)" class="add-towatch" src="../../assets/watch-later-1.png"  title="添加稍后再看"/>
+        <img v-else @click="handleWatchLater(cardObj.aid)" class="add-towatch" src="../../assets/watch-later-1.png"
+          title="添加稍后再看" />
       </span>
+      <span v-else class="watch-later" style="z-index:-100;background: transparent!important;">N/A</span>
+      <!-- 标题等信息 -->
       <div class="container">
-        <a style="text-decoration: none; color: black" :href="cardObj.short_link ? cardObj.short_link : cardObj.short_link_v2
-          " @click="handleLink(cardObj.short_link, cardObj.short_link_v2)">
+        <a style="text-decoration: none; color: black" @click="handleLink(cardObj.media_link)">
           <h4 class="title">
-            <b> {{ cardObj.title }}</b>
+            <b> {{ cardObj.media_title }}</b>
           </h4>
         </a>
         <div class="up">
-          <a @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="up-link" :title="cardObj.owner.name"
-            :href="`https://space.bilibili.com/${cardObj.owner.mid}`" @click="
-              handleLink(`https://space.bilibili.com/${cardObj.owner.mid}`)
-              ">
-            <img class="avatar" :src="cardObj.owner.face" />
-            <span class="up-name">{{ cardObj.owner.name }}</span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <!-- type:512 番剧 -->
-    <div class="card" v-else-if="cardObj._type === 512" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-      <a class="video-img" :href="cardObj.url" @click="handleLink(cardObj.url)"><img class="cover" :src="cardObj.cover"
-          alt="tumb" style="width: 100%" /></a>
-      <!-- <span class="type-name-a">{{ cardObj.apiSeasonInfo.type_name }}</span> -->
-      <span class="pub-time">{{ cardObj.retime }}</span>
-      <span class="watch-later" style="z-index:-100">N/A</span>
-      <div class="container">
-        <a style="text-decoration: none; color: black" :href="cardObj.url" @click="handleLink(cardObj.url)">
-          <h4 class="title">
-            <b> {{ cardObj.title }} </b>
-          </h4>
-        </a>
-        <div class="up">
-          <a class="up-link" :href="cardObj.url" @click="handleLink(cardObj.url)" @mouseenter="handleMouseEnter"
-            @mouseleave="handleMouseLeave">
-            <img class="avatar" :src="cardObj.cover" />
-            <span class="up-name">{{ cardObj.name }}</span>
-          </a>
-        </div>
-      </div>
-    </div>
-    <!-- type:4099 综艺-->
-    <!-- type:4097 疑似推荐UP
-    type:4098 疑似推荐UP
-    type:4100 疑似推荐UP
-    type:4101 疑似推荐UP -->
-    <!-- type:65535 直播（自定义） -->
-    <div class="card" v-else-if="cardObj._type === 65535" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave">
-      <a class="video-img" :href="cardObj.link" @click="handleLink(cardObj.link)"><img class="cover" :src="cardObj.pic"
-          alt="tumb" style="width: 100%" /></a>
-      <span class="pub-time">{{ cardObj.watched_show.text_large }}</span>
-      <span class="watch-later" style="z-index:-100">N/A</span>
-      <div class="container">
-        <a style="text-decoration: none; color: black" :href="cardObj.link" @click="handleLink(cardObj.link)">
-          <h5 class="title">
-            <b> {{ cardObj.title }} </b>
-          </h5>
-        </a>
-        <div class="up">
-          <a class="up-link" :href="`https://space.bilibili.com/${cardObj.uid}`"
-            @click="handleLink(`https://space.bilibili.com/${cardObj.uid}`)" @mouseenter="handleMouseEnter"
-            @mouseleave="handleMouseLeave">
-            <img class="avatar" :src="cardObj.face" />
-            <span class="up-name">{{ cardObj.uname }}</span>
+          <a @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="up-link" :title="cardObj.up_title"
+            @click="handleLink(cardObj.up_link)">
+            <img class="avatar" :src="cardObj.up_cover" />
+            <span class="up-name">{{ cardObj.up_title }}</span>
           </a>
         </div>
       </div>
@@ -82,8 +33,7 @@
 </template>
 
 <script>
-import axios from 'axios';
-
+import { addToWatchData, delTowatchData } from '@/utils/api';
 export default {
   name: "CardEle",
   props: ["cardObj"],
@@ -93,6 +43,16 @@ export default {
     }
   },
   methods: {
+    async getJCT() {
+      return new Promise((resolve) => {
+        chrome.cookies.get({
+          name: 'bili_jct',
+          url: 'https://www.bilibili.com'
+        }, (cookies) => {
+          resolve(cookies.value);
+        });
+      });
+    },
     handleMouseEnter(a) {
       if (a.target.className == "card") {
         a.target.children[1].style.opacity = 1;
@@ -122,45 +82,23 @@ export default {
       }
     },
     //添加稍后再看
-    handleWatchLater(aid, add = true) {
-      console.log(this.cardObj)
-      chrome.cookies.get({
-        name: 'bili_jct',
-        url: 'https://www.bilibili.com'
-      }, (cookies) => {
-        let jct = cookies.value;
-        if (add) {
-          axios.post('https://api.bilibili.com/x/v2/history/toview/add', new URLSearchParams({
-            'jsonp': 'jsonp',
-            'aid': aid,
-            'csrf': jct,
-          }), {
-            headers: {
-              'accept': 'application/json, text/javascript, */*; q=0.01',
-            }
-          }).then((response) => {
-            console.log('添加稍后再看, aid ' + aid)
-            console.log(response);
-            this.addedToWatch = true
-          });
-        } else {
-          axios.post('https://api.bilibili.com/x/v2/history/toview/del', new URLSearchParams({
-            'jsonp': 'jsonp',
-            'aid': aid,
-            'csrf': jct,
-          }), {
-            headers: {
-              'accept': 'application/json, text/javascript, */*; q=0.01',
-            }
-          }).then((response) => {
-            console.log('删除稍后再看, aid ' + aid)
-            console.log(response);
-            this.addedToWatch = false;
-          });
+    handleWatchLater: async function (aid, add = true) {
+      const jct = await this.getJCT();
+      if (add) {
+        console.log('添加稍后再看, aid ' + aid);
+        let responseData = await addToWatchData(aid, jct);
+        if (responseData) {
+          this.addedToWatch = true;
         }
-      });
+      } else {
+        console.log('删除稍后再看, aid ' + aid);
+        let responseData = await delTowatchData(aid, jct);
+        if (responseData) {
+          this.addedToWatch = false;
+        }
+      }
     },
-  },
+  }
 };
 </script>
 <style scoped>
@@ -224,7 +162,7 @@ img {
   text-align: center;
 }
 
-.pub-time {
+.show-text {
   user-select: none;
   transition: opacity 0.3s ease-in;
   opacity: 0;

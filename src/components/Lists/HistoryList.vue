@@ -8,15 +8,15 @@
           </div>
         </div>
       </div>
-      <a href="https://www.bilibili.com/account/history"><button class="moreBtn" onclick="seeMore">查看全部</button>
+      <a><button class="moreBtn" @click="seeMore">查看全部</button>
       </a>
     </el-row>
   </div>
 </template>
 <script>
-import axios from "axios";
+import { getHistoryData } from '@/utils/api'
 import PieceEle from "@/components/Elements/PieceEle.vue";
-import { getTimeText, sleep } from "../../utils";
+import { getTimeText, sleep } from "@/utils/tools";
 
 export default {
   name: "HistoryList",
@@ -41,12 +41,14 @@ export default {
     },
   },
   methods: {
-
-    genVideoData: function (response) {
-      if (!response.data.data?.list) {
+    seeMore: function () {
+      chrome.tabs.create({ url: "https://www.bilibili.com/account/history" });
+    },
+    genVideoData: function (responseData) {
+      if (!responseData.data?.list) {
         return;
       }
-      for (let history of response.data.data.list) {
+      for (let history of responseData.data.list) {
         this.videolist.push({
           index: history.kid,
           cover: history.cover,
@@ -62,10 +64,8 @@ export default {
     },
     update: async function () {
       this.loading = true;
-      let response = await axios.get(
-        `https://api.bilibili.com/x/web-interface/history/cursor?type=archive&ps=20`
-      );
-      this.genVideoData(response);
+      let responseData = await getHistoryData();
+      this.genVideoData(responseData);
       sleep(400).then(() => {
         this.loading = false;
       });

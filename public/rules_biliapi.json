@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "priority": 1,
+        "action": {
+            "type": "modifyHeaders",
+            "requestHeaders": [
+                {
+                    "header": "origin",
+                    "operation": "set",
+                    "value": "https://www.bilibili.com"
+                }
+            ]
+        },
+        "condition": {
+            "urlFilter": "https://api.bilibili.com/x/v2/history/toview*",
+            "resourceTypes": [
+                "xmlhttprequest"
+            ]
+        }
+    }
+]

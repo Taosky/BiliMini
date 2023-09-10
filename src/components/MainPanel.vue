@@ -1,7 +1,8 @@
 <template>
   <div id="videopanel">
+    <!-- 各类提示 -->
     <transition name="slide-fade">
-      <div v-if="logged_in_status === -6" role="alert" class="el-message el-message--error"
+      <div v-if="loggedInStatus === -101" role="alert" class="el-message el-message--error"
         style="top: 1px; z-index: 2002">
         <i class="el-message__icon el-icon-error"></i>
         <p class="el-message__content">
@@ -10,8 +11,7 @@
       </div>
     </transition>
     <transition name="slide-fade">
-      <div v-if="!permissionGranted" role="alert" class="el-message el-message--error"
-        style="top: 1px; z-index: 2002">
+      <div v-if="!permissionGranted" role="alert" class="el-message el-message--error" style="top: 1px; z-index: 2002">
         <i class="el-message__icon el-icon-error"></i>
         <p class="el-message__content">
           <span>缺少API权限，在<strong style="color:darkcyan">浏览器扩展设置页面</strong>授权后再试</span>
@@ -19,40 +19,39 @@
       </div>
     </transition>
     <transition name="slide-fade">
-      <div v-if="logged_in_status === 500001" role="alert" class="el-message el-message--warning"
+      <div v-if="loggedInStatus != -101 && loggedInStatus != 0" role="alert" class="el-message el-message--warning"
         style="top: 1px; z-index: 2002">
         <i class="el-message__icon el-icon-warning"></i>
         <p class="el-message__content">
-          <span>操作太频繁了，稍后重试</span>
+          <span>未知错误，稍后重试</span>
         </p>
       </div>
     </transition>
-
+    <!-- Tab标签 -->
     <el-tabs class="header" v-model="activeTab" @tab-click="handleClick">
-      <el-tab-pane name="8">
+      <el-tab-pane name="1">
         <span slot="label">投稿
           <el-badge v-show="badgeShow.normal" is-dot class="label-badge" />
         </span>
       </el-tab-pane>
-      <el-tab-pane name="512">
+      <el-tab-pane name="2">
         <span slot="label">番剧
           <el-badge v-show="badgeShow.bangumi" is-dot class="label-badge" />
         </span>
       </el-tab-pane>
-      <el-tab-pane name="65536">
+      <el-tab-pane name="3">
         <span slot="label">直播
           <el-badge v-show="badgeShow.live" :value="liveNumStr" class="label-badge" />
         </span>
       </el-tab-pane>
-      <el-tab-pane name="1">
+      <el-tab-pane name="4">
         <span slot="label">历史</span>
       </el-tab-pane>
-      <!-- <el-tab-pane name="2">
-        <span slot="label">收藏</span>
-      </el-tab-pane> -->
     </el-tabs>
-    <dynamic-list v-show="activeTab === '8' || activeTab === '512' || activeTab === '65536'" :activeTab="activeTab" />
-    <history-list v-show="activeTab === '1'"></history-list>
+    <!-- 动态 (投稿、番剧、直播) -->
+    <dynamic-list v-show="activeTab === '1' || activeTab === '2' || activeTab === '3'" :activeTab="activeTab" />
+    <!-- 历史记录 -->
+    <history-list v-show="activeTab === '4'"></history-list>
   </div>
 </template>
 
@@ -60,80 +59,17 @@
 import DynamicList from "@/components/Lists/DynamicList.vue";
 import HistoryList from "@/components/Lists/HistoryList.vue";
 
-import axios from "axios";
 import key from "keymaster";
-import { sleep } from "@/utils";
+import { sleep } from "@/utils/tools";
+import { getLiveData } from "@/utils/api";
 
 export default {
-  name: "VideoPanel",
+  name: "MainPanel",
   components: { DynamicList, HistoryList },
-  async mounted() {
-    // 监听按键以切换tab
-    let that = this;
-    key("1", function () {
-      that.activeTab = localStorage["activeTab"] = "8";
-      return false;
-    });
-    key("2", function () {
-      that.activeTab = localStorage["activeTab"] = "512";
-      return false;
-    });
-    key("3", function () {
-      that.activeTab = localStorage["activeTab"] = "65536";
-      return false;
-    });
-    key("4", function () {
-      that.activeTab = localStorage["activeTab"] = "1";
-      return false;
-    });
-    // key("5", function () {
-    //   that.activeTab = localStorage["activeTab"] = "2";
-    //   return false;
-    // });
-    // 初始化当前tab
-    this.activeTab = localStorage["activeTab"]
-      ? localStorage["activeTab"]
-      : "8";
-    // 判断权限
-    const testResult = await chrome.permissions.contains({
-      origins: [
-        "*://*.bilibili.com/",
-        "*://api.vc.bilibili.com/",
-        "*://api.live.bilibili.com/"
-      ],
-    });
-    console.log("权限检查: " + testResult)
-    this.permissionGranted = testResult;
-    if (!testResult) {
-      return;
-    }
-    // 判断登录状态
-    sleep(1500).then(() => {
-      chrome.runtime.sendMessage(
-        { getLoginStatus: true },
-        (logged_in_status) => {
-          console.log("logged_in_status", logged_in_status);
-          that.logged_in_status = logged_in_status;
-          if (logged_in_status === 0) {
-            // 获取直播数量
-            that.checkLive();
-          } else {
-            return;
-          }
-        }
-      );
-    });
-
-    // 获取更新数量
-    chrome.runtime.sendMessage({ getNums: true }, (nums) => {
-      that.badgeShow.normal = nums.normal > 0 ? true : false;
-      that.badgeShow.bangumi = nums.bangumi > 0 ? true : false;
-    });
-  },
   data: function () {
     return {
-      activeTab: "8",
-      logged_in_status: 0,
+      activeTab: "1",
+      loggedInStatus: 0,
       permissionGranted: true,
       badgeShow: {
         normal: false,
@@ -141,28 +77,76 @@ export default {
         live: false,
       },
       liveNumStr: "",
-      livePage: 1,
     };
   },
+  async mounted() {
+    //监听按键以切换tab
+    for (let i = 0; i < 5; i++) {
+      key(String(i), () => {
+        this.activeTab = localStorage["activeTab"] = String(i);
+        return false;
+      });
+    }
+    //初始化Tab
+    if (localStorage["activeTab"]) {
+      this.activeTab = localStorage["activeTab"]
+    }
+    //检查Host权限
+    const testResult = await chrome.permissions.contains({
+      origins: [
+        "*://*.bilibili.com/*"
+      ],
+    });
+    console.log("Host权限: " + testResult)
+    this.permissionGranted = testResult;
+    if (!testResult) {
+      return;
+    }
+    //判断登录状态
+    sleep(1200).then(() => {
+      chrome.runtime.sendMessage(
+        { getLoginStatus: true }
+      ).then(
+        (loggedInStatus) => {
+          console.log("登录状态: ", loggedInStatus);
+          this.loggedInStatus = loggedInStatus;
+          if (loggedInStatus === 0) {
+            //获取直播数量
+            this.setLiveBadge();
+          } else {
+            return;
+          }
+        }
+      );
+    });
+    //获取更新数量
+    chrome.runtime.sendMessage({ getNums: true })
+      .then((nums) => {
+        this.badgeShow.video = nums.video > 0 ? true : false;
+        this.badgeShow.bangumi = nums.bangumi > 0 ? true : false;
+      });
+  },
   methods: {
-    // tab点击
+    //tab点击
     handleClick: function () {
       localStorage["activeTab"] = this.activeTab;
     },
-
+    //打开登录页
     openLogin: function () {
       chrome.tabs.create({ url: `https://passport.bilibili.com/login` });
     },
-    checkLive: async function () {
-      let response = await axios.get(
-        `https://api.live.bilibili.com/relation/v1/feed/feed_list?page=1&pagesize=11`
-      );
-      if (response.data.data.list.length > 0) {
+    setLiveBadge: async function () {
+      const responseData = await getLiveData(1, 11);
+      if (!responseData) {
+        return;
+      }
+      // 设置直播数量角标
+      if (responseData.data.list.length > 0) {
         this.badgeShow.live = true;
-        if (response.data.data.list.length > 10) {
+        if (responseData.data.list.length > 10) {
           this.liveNumStr = "10+";
         } else {
-          this.liveNumStr = String(response.data.data.list.length);
+          this.liveNumStr = String(responseData.data.list.length);
         }
       }
     },
