@@ -31,7 +31,7 @@
     <el-tabs class="header" v-model="activeTab" @tab-click="handleClick">
       <el-tab-pane name="1">
         <span slot="label">投稿
-          <el-badge v-show="badgeShow.normal" is-dot class="label-badge" />
+          <el-badge v-show="badgeShow.video" is-dot class="label-badge" />
         </span>
       </el-tab-pane>
       <el-tab-pane name="2">
@@ -72,7 +72,7 @@ export default {
       loggedInStatus: 0,
       permissionGranted: true,
       badgeShow: {
-        normal: false,
+        video: false,
         bangumi: false,
         live: false,
       },
@@ -151,7 +151,7 @@ export default {
       }
     },
     resetBadge: function () {
-      this.badgeShow.normal = false;
+      this.badgeShow.video = false;
       this.badgeShow.bangumi = false;
     },
   },

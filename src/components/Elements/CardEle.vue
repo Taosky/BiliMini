@@ -73,13 +73,8 @@ export default {
           "cadetblue";
       }
     },
-    // link for chromium
-    handleLink(link, link_v2 = "") {
-      if (link) {
-        chrome.tabs.create({ url: link });
-      } else {
-        chrome.tabs.create({ url: link_v2 });
-      }
+    handleLink(link) {
+      chrome.tabs.create({ url: link });
     },
     //添加稍后再看
     handleWatchLater: async function (aid, add = true) {

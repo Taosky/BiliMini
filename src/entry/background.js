@@ -38,12 +38,13 @@ async function checkNew(resetBadge = false) {
       //对比updateBaseline, 计算更新数量
       for (let i = 0; i < items.length; i++) {
         let item = items[i];
-        if (currentBaseline !== item.id_str) {
+        if (currentBaseline !== item.id_str && (item.type === 'DYNAMIC_TYPE_AV' || item.type === 'DYNAMIC_TYPE_PGC_UNION')) {
           updateNum += 1
+          console.log(item.type)
           if (item.type === 'DYNAMIC_TYPE_AV') {
             videoNum += 1;
           }
-          if (item.type === 'DYNAMIC_TYPE_PGC') {
+          if (item.type === 'DYNAMIC_TYPE_PGC_UNION') {
             bangumiNum += 1
           }
         } else {
