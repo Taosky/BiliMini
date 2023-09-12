@@ -15,7 +15,7 @@
       <span v-else class="watch-later" style="z-index:-100;background: transparent!important;">N/A</span>
       <!-- 标题等信息 -->
       <div class="container">
-        <a style="text-decoration: none; color: black" @click="handleLink(cardObj.media_link)">
+        <a style="text-decoration: none; color: black" @click="handleLink(cardObj.media_link)" :title="cardObj.media_title">
           <h4 class="title">
             <b> {{ cardObj.media_title }}</b>
           </h4>
@@ -124,6 +124,9 @@ export default {
 
 img {
   border-radius: 5px 5px 0 0;
+}
+img:hover{
+  cursor: pointer;
 }
 
 .type-name-a {
