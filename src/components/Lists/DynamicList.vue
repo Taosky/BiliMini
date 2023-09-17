@@ -45,6 +45,7 @@ export default {
   },
   async mounted() {
     this.listenScoller();
+    await this.getToWatchs();
     // 第一页(投稿)启动不会监听到值变化, 手动加载一次
     if (!localStorage["activeTab"] || localStorage["activeTab"] === "1") {
       this.updateCards();
@@ -261,10 +262,8 @@ export default {
           }
         }
 
-
-
         // 稍后再看标记
-        if (this.toWatchAids.indexOf(cardObj.aid) != -1) {
+        if (cardObj.type_ === "video" && this.toWatchAids.indexOf(Number(cardObj.aid)) !== -1) {
           cardObj.toWatch = true;
         }
         if (trueIndex % 2 === 0) {
@@ -294,8 +293,6 @@ export default {
         let type_ = "pgc";
         if (this.isVideo()) {
           type_ = "video";
-          // 视频投稿页获取稍后再看比对
-          await this.getToWatchs();
         }
         const offset = loadMore ? this.lastDynamicId : false;
         // console.log(this.lastDynamicId)
