@@ -5,12 +5,14 @@
         <!-- 两列显示 -->
         <div id="col1">
           <div v-for="cardObj in data[activeTab]?.videolist1" :key="cardObj.index">
-            <card-ele :cardObj="cardObj"></card-ele>
+            <card-ele :cardObj="cardObj"
+              :extraAuthors="cardObj.type_ === 'video' ? data[activeTab].dynamicExtraAuthor[cardObj.dynamicId] : undefined"></card-ele>
           </div>
         </div>
         <div id="col2">
           <div v-for="cardObj in data[activeTab]?.videolist2" :key="cardObj.index">
-            <card-ele :cardObj="cardObj"></card-ele>
+            <card-ele :cardObj="cardObj"
+              :extraAuthors="cardObj.type_ === 'video' ? data[activeTab].dynamicExtraAuthor[cardObj.dynamicId] : undefined"></card-ele>
           </div>
         </div>
       </div>
@@ -70,6 +72,8 @@ export default {
         1: {
           videolist1: [],
           videolist2: [],
+          foldInfo: {},
+          dynamicExtraAuthor: {},
           noMore: false,
           loaded: false,
           page: 1,
@@ -199,7 +203,8 @@ export default {
         this.data[this.activeTab].noMore = true;
       }
       // 截取偶数个动态 (默认为13个)
-      const items = responseData.data.items.slice(0,10);
+      const items = responseData.data.items.slice(0, 10);
+      let trueIndex = 0;
       for (let i = 0; i < items.length; i++) {
         let item = items[i];
         let cardObj = { "dynamicId": item.id_str, type_: "unknown" };
@@ -230,15 +235,44 @@ export default {
         cardObj.up_title = authorInfo.name;
         cardObj.up_cover = authorInfo.face;
         cardObj.show_text = authorInfo.pub_time;
+
+        // 折叠投稿相关处理
+        if (cardObj.type_ === "video") {
+          // 跳过折叠的联合投稿
+          if (this.data[this.activeTab].foldInfo[cardObj.dynamicId]?.originId) {
+            // 添加折叠的up信息到原动态
+            let originDynamicId = this.data[this.activeTab].foldInfo[cardObj.dynamicId].originId;
+            // 存储动态对应UP主信息
+            if (!this.data[this.activeTab].dynamicExtraAuthor[originDynamicId]) {
+              this.data[this.activeTab].dynamicExtraAuthor[originDynamicId] = []
+            }
+            this.data[this.activeTab].dynamicExtraAuthor[originDynamicId].push({ "up_link": cardObj.up_link, "up_title": cardObj.up_title, "up_cover": cardObj.up_cover })
+            // 不添加本动态
+            continue;
+          }
+
+          // 联合投稿(折叠动态ID处理存储)
+          if (item.modules.module_fold && item.modules.module_fold.ids) {
+            let fold_ids = item.modules.module_fold.ids;
+            for (let j = 0; j < fold_ids.length; j++) {
+              this.data[this.activeTab].foldInfo[fold_ids[j]] = { "originId": cardObj.dynamicId, };
+              cardObj.up_cover_extra = [];
+            }
+          }
+        }
+
+
+
         // 稍后再看标记
         if (this.toWatchAids.indexOf(cardObj.aid) != -1) {
           cardObj.toWatch = true;
         }
-        if (i % 2 === 0) {
+        if (trueIndex % 2 === 0) {
           this.data[this.activeTab].videolist1.push(cardObj);
         } else {
           this.data[this.activeTab].videolist2.push(cardObj);
         }
+        trueIndex += 1;
       }
     },
     updateCards: async function (loadMore = false) {

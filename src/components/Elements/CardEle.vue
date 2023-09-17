@@ -22,8 +22,19 @@
           </h4>
         </a>
         <div class="up">
-          <a @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="up-link" :title="cardObj.up_title"
-            @click="handleLink(cardObj.up_link)">
+          <a v-if="extraAuthors" @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="up-link"
+            title="联合投稿" @click="handleLink(cardObj.up_link)">
+            <span>
+              <img class="avatar" :src="cardObj.up_cover" />
+              <div class="extra-avatars" v-for="author in extraAuthors" :key="author.name">
+                <img class="duo-avatar" :src="author.up_cover" />
+              </div>
+            </span>
+
+            <span class="up-name">联合投稿</span>
+          </a>
+          <a v-else @mouseenter="handleMouseEnter" @mouseleave="handleMouseLeave" class="up-link"
+            :title="cardObj.up_title" @click="handleLink(cardObj.up_link)">
             <img class="avatar" :src="cardObj.up_cover" />
             <span class="up-name">{{ cardObj.up_title }}</span>
           </a>
@@ -37,7 +48,7 @@
 import { addToWatchData, delTowatchData } from '@/utils/api';
 export default {
   name: "CardEle",
-  props: ["cardObj"],
+  props: ["cardObj", "extraAuthors"],
   data: function () {
     return {
       addedToWatch: this.cardObj.toWatch ? true : false,
@@ -231,6 +242,19 @@ img:hover {
   border-radius: 10px;
   width: 22px;
   display: inline-block;
+}
+
+.extra-avatars {
+  align-self: flex-start;
+  display: inline-block;
+
+}
+
+.duo-avatar {
+  border-radius: 10px;
+  width: 22px;
+  display: inline-block;
+  margin-left: -7px;
 }
 
 .up-link {
