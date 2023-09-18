@@ -164,7 +164,7 @@ export default {
     },
     getToWatchs: async function () {
       const responseData = await getToWatchData();
-      if (responseData) {
+      if (responseData && responseData.list) {
         responseData.data.list.forEach((one) => {
           this.toWatchAids.push(one.aid);
         });
