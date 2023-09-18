@@ -199,11 +199,21 @@ export default {
 
     },
     genDynamicData: function (responseData) {
+      // 防止报错
+      if (!responseData.data) {
+        return;
+      }
+      // 判断没有更多
+      if (!responseData.data.items) {
+        this.data[this.activeTab].noMore = true;
+        return;
+      }
       const has_more = responseData.data.has_more;
-      if (!has_more) {
+      if (!has_more || responseData.data.items.length < 10) {
         this.data[this.activeTab].noMore = true;
       }
-      // 截取偶数个动态 (默认为13个)
+      
+      // 截取偶数个动态
       const items = responseData.data.items.slice(0, 10);
       let trueIndex = 0;
       for (let i = 0; i < items.length; i++) {
