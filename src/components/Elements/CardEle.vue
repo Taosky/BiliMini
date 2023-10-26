@@ -187,7 +187,7 @@ img:hover {
   font-size: 14px;
   border-radius: 10px;
   margin-top: 3px;
-  margin-left: -65px;
+  margin-left: -70px;
   padding-left: 6px;
   padding-right: 6px;
   float: right;

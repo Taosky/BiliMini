@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <el-row v-loading.fullscreen.lock="loading" :element-loading-background="el_loading_bg">
-      <div>
+      <div class="col-box">
         <!-- 两列显示 -->
         <div id="col1">
           <div v-for="cardObj in data[activeTab]?.videolist1" :key="cardObj.index">
@@ -212,7 +212,7 @@ export default {
       if (!has_more || responseData.data.items.length < 10) {
         this.data[this.activeTab].noMore = true;
       }
-      
+
       // 截取偶数个动态
       const items = responseData.data.items.slice(0, 10);
       let trueIndex = 0;
@@ -324,6 +324,12 @@ export default {
   margin-top: 60px;
 }
 
+.col-box {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+}
+
 #col1 {
   margin-right: 5px;
 }
@@ -332,7 +338,7 @@ export default {
 #col2 {
   width: 48%;
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-flow: column;
 }
 
 .moreBtn {

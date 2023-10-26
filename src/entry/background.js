@@ -26,10 +26,10 @@ async function checkNew(resetBadge = false) {
     currentBaseline = result.updateBaseline;
     //重置角标或首次打开时更新存储
     if (resetBadge || !currentBaseline) {
-      chrome.storage.local.set({ "updateBaseline": data.data.update_baseline }, function () {
+      chrome.storage.local.set({ "updateBaseline": data.data.items[0].id_str }, function () {
         console.log('updateBaseline更新: ');
         console.log(currentBaseline)
-        console.log(data.data.update_baseline)
+        console.log(data.data.items[0].id_str)
         chrome.action.setBadgeText({ text: '' });
       });
     }
@@ -38,13 +38,14 @@ async function checkNew(resetBadge = false) {
       //对比updateBaseline, 计算更新数量
       for (let i = 0; i < items.length; i++) {
         let item = items[i];
-        if (currentBaseline !== item.id_str && (item.type === 'DYNAMIC_TYPE_AV' || item.type === 'DYNAMIC_TYPE_PGC_UNION')) {
-          updateNum += 1
+        if (currentBaseline !== item.id_str) {
           console.log(item.type)
           if (item.type === 'DYNAMIC_TYPE_AV') {
+            updateNum += 1
             videoNum += 1;
           }
           if (item.type === 'DYNAMIC_TYPE_PGC_UNION') {
+            updateNum += 1
             bangumiNum += 1
           }
         } else {

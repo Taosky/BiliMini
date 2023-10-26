@@ -1,5 +1,5 @@
 <template>
-  <a class="piece" :href="video.link" @click="handleLink(video.link)">
+  <a class="piece" @click="handleLink(video.link)">
     <div class="video-img">
       <picture>
         <img :src="video.cover" />
@@ -49,6 +49,7 @@ export default {
 
 .piece:hover {
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.271);
+  cursor: pointer;
 }
 
 .video-img {
