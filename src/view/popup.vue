@@ -12,6 +12,11 @@ export default {
   components: { MainPanel },
   mounted: function () {
     chrome.runtime.sendMessage({ popupOpen: true });
+    setInterval(()=>{
+      chrome.runtime.sendMessage({ action: 'heartbeat' }, (response) => {
+      console.log(response.status);
+  });
+    }, 3000);
   },
 };
 </script>

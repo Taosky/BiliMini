@@ -2,6 +2,7 @@
 let bangumiNum = 0;
 let videoNum = 0
 let loggedInStatus = 0;
+let lastHeartbeat = Date.now();
 
 
 //检查新投稿及登录状态
@@ -82,6 +83,29 @@ function getLoginStatus() {
   });
 }
 
+// 启用稍后再看请求拦截规则
+function addRule() {
+  chrome.declarativeNetRequest.updateDynamicRules({
+    addRules: [
+      {
+        id: 1,
+        priority: 1,
+        action: {
+          type: 'modifyHeaders',
+          requestHeaders: [
+            { header: 'origin', operation: 'set', value: 'https://www.bilibili.com' }
+          ]
+        },
+        condition: {
+          urlFilter: 'https://api.bilibili.com/x/v2/history/toview*',
+          resourceTypes: ['xmlhttprequest']
+        }
+      }
+    ],
+    removeRuleIds: []
+  }, () => console.log('启用请求拦截'));
+}
+
 //监听popup消息
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   //返回更新数量
@@ -97,6 +121,12 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
   //打开弹窗时更新并重置角标
   if (message.popupOpen) {
     checkNew(resetBadge = true);
+    lastHeartbeat = Date.now();
+    addRule();
+  }
+  if (message.action === 'heartbeat') {
+    lastHeartbeat = Date.now();
+    sendResponse({ status: 'received' });
   }
 });
 
@@ -109,3 +139,14 @@ chrome.alarms.onAlarm.addListener(() => {
 
 //立即检查更新
 checkNew();
+
+//监听心跳
+setInterval(() => {
+  const currentTime = Date.now();
+  if (currentTime - lastHeartbeat > 6000) {
+    // 超过6秒没有收到心跳消息，认为popup页面关闭
+    chrome.declarativeNetRequest.updateDynamicRules({
+      removeRuleIds: [1]
+    }, () => console.log('停用请求拦截'));
+  }
+}, 5000); // 每3秒检查一次
