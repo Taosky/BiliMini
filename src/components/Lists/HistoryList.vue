@@ -75,6 +75,11 @@ export default {
 </script>
 
 <style scoped>
+html.vivaldi .main {
+  height: 590px;
+  overflow-y: auto;
+}
+
 .main {
   margin-top: 60px;
 }

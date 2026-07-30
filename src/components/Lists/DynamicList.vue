@@ -44,7 +44,15 @@ export default {
     CardEle,
   },
   async mounted() {
-    this.listenScoller();
+    //检测浏览器
+    const vBrowser = await this.isVivaldi();
+    if (vBrowser) {
+      console.log("当前为Vivaldi浏览器");
+      document.documentElement.classList.add("vivaldi");
+      this.listenScollerVivaldi();
+    } else {
+      this.listenScoller();
+    }
     await this.getToWatchs();
     // 第一页(投稿)启动不会监听到值变化, 手动加载一次
     if (!localStorage["activeTab"] || localStorage["activeTab"] === "1") {
@@ -119,6 +127,11 @@ export default {
     },
   },
   methods: {
+    isVivaldi: async function () {
+      const win = await chrome.windows.getCurrent();
+      // Vivaldi 的 window 对象通常带有 vivExtData 或类似专属附加属性
+      return typeof win.vivExtData !== 'undefined';
+    },
     seeMore: function () {
       chrome.tabs.create({ url: this.data[this.activeTab].moreLink });
     },
@@ -140,6 +153,19 @@ export default {
           document.documentElement.clientHeight || document.body.clientHeight;
         let scrollHeight =
           document.documentElement.scrollHeight || document.body.scrollHeight;
+        if (scrollTop + windowHeight + 100 >= scrollHeight) {
+          if (this.isLive() || this.isBangumi() || this.isVideo()) {
+            this.infLoad();
+          }
+        }
+      });
+    },
+    listenScollerVivaldi: function () {
+      const main = document.querySelector(".main");
+      main.addEventListener("scroll", () => {
+        let scrollTop = main.scrollTop;
+        let windowHeight = main.clientHeight;
+        let scrollHeight = main.scrollHeight;
         if (scrollTop + windowHeight + 100 >= scrollHeight) {
           if (this.isLive() || this.isBangumi() || this.isVideo()) {
             this.infLoad();
@@ -320,6 +346,11 @@ export default {
 </script>
 
 <style scoped>
+html.vivaldi .main {
+  height: 590px;
+  overflow-y: auto;
+}
+
 .main {
   margin-top: 60px;
 }

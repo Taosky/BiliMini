@@ -85,25 +85,32 @@ function getLoginStatus() {
 
 // 启用稍后再看请求拦截规则
 function addRule() {
-  chrome.declarativeNetRequest.updateDynamicRules({
-    addRules: [
-      {
-        id: 1,
-        priority: 1,
-        action: {
-          type: 'modifyHeaders',
-          requestHeaders: [
-            { header: 'origin', operation: 'set', value: 'https://www.bilibili.com' }
-          ]
-        },
-        condition: {
-          urlFilter: 'https://api.bilibili.com/x/v2/history/toview*',
-          resourceTypes: ['xmlhttprequest']
-        }
-      }
-    ],
-    removeRuleIds: []
-  }, () => console.log('启用请求拦截'));
+  chrome.declarativeNetRequest.getDynamicRules((rules) => {
+    const ruleExists = rules.some(rule => rule.id === 1);
+    console.log('规则是否已存在:', ruleExists);
+    if (!ruleExists) {
+      chrome.declarativeNetRequest.updateDynamicRules({
+        addRules: [
+          {
+            id: 1,
+            priority: 1,
+            action: {
+              type: 'modifyHeaders',
+              requestHeaders: [
+                { header: 'origin', operation: 'set', value: 'https://www.bilibili.com' }
+              ]
+            },
+            condition: {
+              urlFilter: 'https://api.bilibili.com/x/v2/history/toview*',
+              resourceTypes: ['xmlhttprequest']
+            }
+          }
+        ],
+        removeRuleIds: []
+      }, () => console.log('启用请求拦截'));
+    }
+  });
+  
 }
 
 //监听popup消息

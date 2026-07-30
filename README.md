@@ -55,6 +55,10 @@ Bilibili辅助扩展，用于提示并快速查看更新。
 
 ### 更新
 
+**2026-07-30: 版本2.3.11（仅Chrome商店）**
+
+- 修复Vivaldi浏览器上显示异常和不能滚动加载的问题 [#16](https://github.com/Taosky/BiliMini/issues/16)
+
 **2024-07-31: 版本2.3.9**
 
 - 修复了B站页面“稍后在看”失效问题，关闭弹出页后可能需等待数秒 ([#14](https://github.com/Taosky/BiliMini/issues/14))

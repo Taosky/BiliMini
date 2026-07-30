@@ -122,6 +122,10 @@ export default {
     color: rgb(219, 215, 215) !important;
   }
 }
+html.vivaldi .card {
+  width: 168px;
+
+}
 
 .card {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);

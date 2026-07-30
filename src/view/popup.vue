@@ -22,6 +22,13 @@ export default {
 </script>
 
 <style>
+html.vivaldi,
+html.vivaldi body {
+    height:650px;
+    overflow:hidden;
+}
+
+
 html {
   font-family: "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
   -ms-overflow-style: none;
@@ -51,11 +58,6 @@ body {
   html {
     scrollbar-color: gray #282828;
   }
-}
-
-body {
-  overflow-x: hidden;
-  overflow-y: auto;
 }
 
 #loading {
